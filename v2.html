@@ -143,8 +143,8 @@
     .review-meta { font-size: 12px; color: #9ca3af; }
 
     /* サブスク */
-    .plan-container { display: flex; gap: 12px; margin-bottom: 20px; }
-    .plan-card { flex: 1; background: #fff; border-radius: 16px; padding: 24px 16px; border: 2px solid #e5e7eb; text-align: center; position: relative; transition: all 0.2s; }
+    .plan-container { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+    .plan-card { background: #fff; border-radius: 16px; padding: 24px 16px; border: 2px solid #e5e7eb; text-align: center; position: relative; transition: all 0.2s; }
     .plan-card.active { border-color: #2563eb; box-shadow: 0 4px 20px rgba(37,99,235,0.15); }
     .plan-badge { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; padding: 4px 14px; border-radius: 12px; font-size: 11px; font-weight: 700; white-space: nowrap; }
     .plan-name { font-size: 20px; font-weight: 800; color: #1e293b; margin: 8px 0 12px; }
@@ -192,6 +192,49 @@
     .quiz-nav-btns { display: flex; gap: 8px; margin-top: 12px; }
     .quiz-nav-btns .btn-prev { flex: 0 0 auto; }
     .quiz-nav-btns .btn-next { flex: 1; }
+
+    /* v3: 定着関連 */
+    .mastery-crown { font-size: 16px; }
+    .mastery-progress { display: flex; gap: 3px; align-items: center; }
+    .mastery-dot { width: 8px; height: 8px; border-radius: 50%; background: #e5e7eb; }
+    .mastery-dot.filled { background: #f59e0b; }
+    .mastery-dot.mastered { background: #f59e0b; }
+
+    /* v3: 定着度ページ */
+    .mastery-summary { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 16px; padding: 24px; text-align: center; margin-bottom: 16px; }
+    .mastery-summary-icon { font-size: 48px; margin-bottom: 8px; }
+    .mastery-summary-title { font-size: 20px; font-weight: 800; color: #92400e; margin-bottom: 4px; }
+    .mastery-summary-num { font-size: 36px; font-weight: 800; color: #b45309; }
+    .mastery-summary-sub { font-size: 13px; color: #92400e; margin-top: 4px; }
+    .mastery-subject-card { background: #fff; border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    .mastery-subject-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .mastery-subject-name { font-size: 14px; font-weight: 700; color: #1e293b; flex: 1; }
+    .mastery-subject-count { font-size: 14px; font-weight: 800; color: #b45309; }
+    .mastery-bar { width: 100%; height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; }
+    .mastery-bar-fill { height: 100%; background: linear-gradient(90deg, #f59e0b, #d97706); border-radius: 4px; transition: width 0.3s; }
+    .mastery-bar-detail { display: flex; justify-content: space-between; margin-top: 4px; font-size: 11px; color: #6b7280; }
+
+    /* v3: 料金プラン */
+    .pricing-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+    .pricing-card { background: #fff; border-radius: 16px; padding: 20px; border: 2px solid #e5e7eb; position: relative; transition: all 0.2s; }
+    .pricing-card.active { border-color: #2563eb; box-shadow: 0 4px 20px rgba(37,99,235,0.15); }
+    .pricing-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .pricing-card-name { font-size: 16px; font-weight: 700; color: #1e293b; }
+    .pricing-card-price { font-size: 20px; font-weight: 800; color: #1e40af; }
+    .pricing-card-desc { font-size: 13px; color: #6b7280; margin-bottom: 12px; }
+    .pricing-card-btn { width: 100%; padding: 10px 0; border-radius: 10px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .pricing-bought { background: #d4edda; color: #155724; }
+    .pricing-buy { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff; }
+
+    /* v3: タブ切替 */
+    .tab-bar { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; }
+    .tab-btn { padding: 8px 16px; border-radius: 20px; border: 2px solid #e5e7eb; background: #fff; font-size: 13px; font-weight: 600; color: #6b7280; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+    .tab-btn.active { border-color: #2563eb; background: #eff6ff; color: #2563eb; }
+
+    /* v3: 問題制限バナー */
+    .limit-banner { background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 12px; padding: 16px; text-align: center; margin-top: 16px; }
+    .limit-banner-text { font-size: 14px; font-weight: 600; color: #92400e; margin-bottom: 8px; }
+    .limit-banner-btn { padding: 10px 24px; border-radius: 10px; border: none; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -214,6 +257,10 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
     };
 
     const REVIEW_INTERVALS = [1, 7, 16, 28];
+    const FREE_LIMIT = 10;
+    const SUBJECT_PRICE = 500;
+    const ALL_SUBJECTS_PRICE = 2000;
+
     const formatDate = (date) => {
       const d = new Date(date);
       return d.getFullYear() + "/" + String(d.getMonth()+1).padStart(2,"0") + "/" + String(d.getDate()).padStart(2,"0") + " " + String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
@@ -224,18 +271,40 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
     const loadState = (key, def) => { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : def; } catch(e) { return def; } };
     const saveState = (key, val) => { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {} };
 
+    // ============ 定着判定ヘルパー ============
+    // reviewLog のエントリ: { subject, questionId, studiedAt, streak, masteredAt? }
+    // streak: 連続正答回数（リマインド復習での正答のみカウント）
+    // masteredAt: 4回連続正答した日時
+
+    function getMasteryStatus(reviewLog, subject, questionId) {
+      const entry = reviewLog.find(r => r.subject === subject && r.questionId === questionId);
+      if (!entry) return { streak: 0, mastered: false };
+      return { streak: entry.streak || 0, mastered: !!entry.masteredAt };
+    }
+
+    function getMasteredCount(reviewLog, subject) {
+      return reviewLog.filter(r => r.subject === subject && r.masteredAt).length;
+    }
+
+    function getTotalMasteredCount(reviewLog) {
+      return reviewLog.filter(r => r.masteredAt).length;
+    }
+
     // ============ メインApp ============
     function App() {
       const [page, setPage] = useState("home");
       const [selectedSubject, setSelectedSubject] = useState(null);
       const [startQuestionIndex, setStartQuestionIndex] = useState(null);
-      const [isSubscribed, setIsSubscribed] = useState(() => loadState("shindan_sub", false));
+      const [purchasedSubjects, setPurchasedSubjects] = useState(() => loadState("shindan_purchased", []));
       const [results, setResults] = useState(() => loadState("shindan_results", []));
       const [reviewLog, setReviewLog] = useState(() => loadState("shindan_review", []));
 
-      useEffect(() => { saveState("shindan_sub", isSubscribed); }, [isSubscribed]);
+      useEffect(() => { saveState("shindan_purchased", purchasedSubjects); }, [purchasedSubjects]);
       useEffect(() => { saveState("shindan_results", results); }, [results]);
       useEffect(() => { saveState("shindan_review", reviewLog); }, [reviewLog]);
+
+      const isAllPurchased = purchasedSubjects.includes("all");
+      const isSubjectPurchased = (key) => isAllPurchased || purchasedSubjects.includes(key);
 
       const totalQuestions = useMemo(() => {
         let t = 0;
@@ -243,31 +312,82 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
         return t;
       }, []);
 
+      // 復習リマインドロジック（改良版）
+      // 1回目: 正解不正解にかかわらずリマインド
+      // 2回目以降: 正解したものだけリマインド対象
+      // 不正解時: streakリセット、1日後からやり直し
       const getReviewItems = useCallback(() => {
         const now = new Date();
         const items = [];
         reviewLog.forEach(log => {
-          REVIEW_INTERVALS.forEach(days => {
-            const reviewDate = addDays(log.studiedAt, days);
-            const diff = (reviewDate - now) / (1000*60*60*24);
-            if (diff <= 1 && diff >= -1) {
-              const subjectQuestions = ALL_QUESTIONS[log.subject] || [];
-              const q = subjectQuestions.find(q => q.id === log.questionId);
-              if (q && !items.find(i => i.subject === log.subject && i.id === q.id && i.days === days)) {
-                items.push({...q, subject: log.subject, days, reviewDate, studiedAt: log.studiedAt});
-              }
+          if (log.masteredAt) return; // 定着済みはスキップ
+          const streak = log.streak || 0;
+          // 次に復習すべきインターバルを決定
+          // streak=0: 初回学習後 → 1日後（REVIEW_INTERVALS[0]）
+          // streak=1: 1回目リマインド正答後 → 7日後（REVIEW_INTERVALS[1]）
+          // streak=2: 2回目リマインド正答後 → 16日後（REVIEW_INTERVALS[2]）
+          // streak=3: 3回目リマインド正答後 → 28日後（REVIEW_INTERVALS[3]）
+          const nextIntervalIdx = Math.min(streak, REVIEW_INTERVALS.length - 1);
+          const days = REVIEW_INTERVALS[nextIntervalIdx];
+          const reviewDate = addDays(log.studiedAt, days);
+          const diff = (reviewDate - now) / (1000*60*60*24);
+          if (diff <= 1 && diff >= -7) {
+            const subjectQuestions = ALL_QUESTIONS[log.subject] || [];
+            const q = subjectQuestions.find(q => q.id === log.questionId);
+            if (q && !items.find(i => i.subject === log.subject && i.id === q.id)) {
+              items.push({...q, subject: log.subject, days, reviewDate, studiedAt: log.studiedAt, streak, isReview: true});
             }
-          });
+          }
         });
         return items;
       }, [reviewLog]);
 
-      const handleResult = (subject, questionId, correct) => {
+      const handleResult = (subject, questionId, correct, isReviewMode) => {
         setResults(prev => [...prev, {subject, questionId, correct, date: new Date().toISOString()}]);
         setReviewLog(prev => {
           const existing = prev.find(r => r.subject === subject && r.questionId === questionId);
-          if (existing) return prev.map(r => (r.subject === subject && r.questionId === questionId) ? {...r, studiedAt: new Date().toISOString()} : r);
-          return [...prev, {subject, questionId, studiedAt: new Date().toISOString()}];
+          if (existing) {
+            return prev.map(r => {
+              if (r.subject === subject && r.questionId === questionId) {
+                if (r.masteredAt) return r; // 既に定着済み
+                if (isReviewMode) {
+                  // リマインド復習での回答
+                  if (correct) {
+                    const newStreak = (r.streak || 0) + 1;
+                    if (newStreak >= 4) {
+                      return {...r, studiedAt: new Date().toISOString(), streak: newStreak, masteredAt: new Date().toISOString()};
+                    }
+                    return {...r, studiedAt: new Date().toISOString(), streak: newStreak};
+                  } else {
+                    // 不正解: streakリセット、1日後からやり直し
+                    return {...r, studiedAt: new Date().toISOString(), streak: 0};
+                  }
+                } else {
+                  // 通常学習: studiedAtを更新（streakはリセットしない。初回学習のみ）
+                  if (r.streak === undefined || r.streak === null) {
+                    return {...r, studiedAt: new Date().toISOString(), streak: 0};
+                  }
+                  return {...r, studiedAt: new Date().toISOString()};
+                }
+              }
+              return r;
+            });
+          }
+          return [...prev, {subject, questionId, studiedAt: new Date().toISOString(), streak: 0}];
+        });
+      };
+
+      const purchaseSubject = (key) => {
+        setPurchasedSubjects(prev => {
+          if (prev.includes(key)) return prev;
+          return [...prev, key];
+        });
+      };
+
+      const purchaseAll = () => {
+        setPurchasedSubjects(prev => {
+          if (prev.includes("all")) return prev;
+          return [...prev, "all"];
         });
       };
 
@@ -294,7 +414,7 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
           <header className="header">
             <div className="header-inner">
               <h1 className="header-title" onClick={goHome}>📚 中小企業診断士 一問一答 v2</h1>
-              <div>{isSubscribed ? <span className="badge-premium">Premium</span> : <span className="badge-free">Free</span>}</div>
+              <div>{isAllPurchased ? <span className="badge-premium">全科目</span> : <span className="badge-free">Free</span>}</div>
             </div>
           </header>
 
@@ -308,27 +428,28 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
           </nav>
 
           <main className="main">
-            {page==="home" && <HomePage onSelect={selectSubject} totalQ={totalQuestions} totalA={results.length} reviewCount={isSubscribed ? getReviewItems().length : 0} results={results} />}
-            {page==="quiz" && selectedSubject && <QuizPage subjectKey={selectedSubject} questions={ALL_QUESTIONS[selectedSubject] || []} onResult={handleResult} onBack={goHome} results={results} startIndex={startQuestionIndex} />}
+            {page==="home" && <HomePage onSelect={selectSubject} totalQ={totalQuestions} totalA={results.length} reviewCount={getReviewItems().length} results={results} reviewLog={reviewLog} isSubjectPurchased={isSubjectPurchased} />}
+            {page==="quiz" && selectedSubject && <QuizPage subjectKey={selectedSubject} questions={ALL_QUESTIONS[selectedSubject] || []} onResult={handleResult} onBack={goHome} results={results} startIndex={startQuestionIndex} reviewLog={reviewLog} isSubjectPurchased={isSubjectPurchased} onGoPlan={() => setPage("subscription")} />}
             {page==="quiz" && !selectedSubject && <SubjectSelectPage onSelect={selectSubject} results={results} />}
-            {page==="list" && <QuestionListPage results={results} onGoToQuestion={goToQuestion} />}
-            {page==="stats" && <StatsPage results={results} isSubscribed={isSubscribed} onSubscribe={() => setPage("subscription")} />}
-            {page==="review" && <ReviewPage reviewItems={getReviewItems()} isSubscribed={isSubscribed} onSubscribe={() => setPage("subscription")} onStartReview={(subj) => { setSelectedSubject(subj); setStartQuestionIndex(null); setPage("quiz"); }} />}
-            {page==="subscription" && <SubscriptionPage isSubscribed={isSubscribed} onToggle={() => setIsSubscribed(!isSubscribed)} />}
+            {page==="list" && <QuestionListPage results={results} onGoToQuestion={goToQuestion} reviewLog={reviewLog} />}
+            {page==="stats" && <StatsPage results={results} reviewLog={reviewLog} />}
+            {page==="review" && <ReviewPage reviewItems={getReviewItems()} onStartReview={(subj) => { setSelectedSubject(subj); setStartQuestionIndex(null); setPage("quiz"); }} reviewLog={reviewLog} />}
+            {page==="subscription" && <SubscriptionPage purchasedSubjects={purchasedSubjects} onPurchaseSubject={purchaseSubject} onPurchaseAll={purchaseAll} isAllPurchased={isAllPurchased} />}
           </main>
         </div>
       );
     }
 
     // ============ ホーム ============
-    function HomePage({onSelect, totalQ, totalA, reviewCount, results}) {
+    function HomePage({onSelect, totalQ, totalA, reviewCount, results, reviewLog, isSubjectPurchased}) {
+      const masteredTotal = getTotalMasteredCount(reviewLog);
       return (
         <div>
           <div className="hero">
             <div className="hero-emoji">📖</div>
             <h2 className="hero-title">中小企業診断士試験対策</h2>
             <p className="hero-sub">1次試験 全7科目 一問一答</p>
-            <p className="hero-count">収録 {totalQ}問 ｜ 回答 {totalA}問 ｜ 要復習 {reviewCount}問</p>
+            <p className="hero-count">収録 {totalQ}問 ｜ 回答 {totalA}問 ｜ 定着 {masteredTotal}問 ｜ 要復習 {reviewCount}問</p>
           </div>
 
           <h3 style={{fontSize:16, fontWeight:700, color:"#1e293b", marginBottom:10}}>科目を選んで学習</h3>
@@ -337,12 +458,14 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
               const qs = ALL_QUESTIONS[key] || [];
               const subResults = results.filter(r => r.subject === key);
               const answered = new Set(subResults.map(r => r.questionId)).size;
+              const mastered = getMasteredCount(reviewLog, key);
+              const purchased = isSubjectPurchased(key);
               return (
                 <div key={key} className="subject-card" style={{borderLeftColor: subj.color}} onClick={() => onSelect(key)}>
                   <div className="subject-icon">{subj.icon}</div>
                   <div className="subject-info">
-                    <div className="subject-name">{subj.name}</div>
-                    <div className="subject-meta">{qs.length}問収録 ・ {answered}問回答済</div>
+                    <div className="subject-name">{subj.name}{!purchased && <span style={{fontSize:11,color:"#f59e0b",marginLeft:6}}>無料{FREE_LIMIT}問</span>}</div>
+                    <div className="subject-meta">{qs.length}問収録 ・ {answered}問回答済 ・ 👑{mastered}定着</div>
                   </div>
                   <div className="subject-arrow">›</div>
                 </div>
@@ -352,7 +475,7 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
 
           <div className="info-card">
             <h3 className="info-title">学習のポイント</h3>
-            <p className="info-text">「最高の勉強法」（安川康介 著）に基づく復習スケジュールで効率的に記憶を定着させましょう。学習した1日後、7日後、16日後、28日後に復習することで、忘却曲線に対抗します。</p>
+            <p className="info-text">「最高の勉強法」（安川康介 著）に基づく復習スケジュールで効率的に記憶を定着させましょう。学習した1日後、7日後、16日後、28日後に復習し、4回連続正解すると「定着👑」となります。</p>
           </div>
         </div>
       );
@@ -383,8 +506,8 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
       );
     }
 
-    // ============ 問題一覧（v2新機能） ============
-    function QuestionListPage({results, onGoToQuestion}) {
+    // ============ 問題一覧（v2: 王冠マーク付き） ============
+    function QuestionListPage({results, onGoToQuestion, reviewLog}) {
       const subjectKeys = Object.keys(SUBJECTS);
       const [selectedSubject, setSelectedSubject] = useState(subjectKeys[0]);
 
@@ -392,12 +515,15 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
       const subResults = results.filter(r => r.subject === selectedSubject);
 
       const getQuestionStatus = (qId) => {
+        const mastery = getMasteryStatus(reviewLog, selectedSubject, qId);
+        if (mastery.mastered) return "mastered";
         const qResults = subResults.filter(r => r.questionId === qId);
         if (qResults.length === 0) return "unanswered";
         return qResults[qResults.length - 1].correct ? "correct" : "incorrect";
       };
 
       const answeredCount = new Set(subResults.map(r => r.questionId)).size;
+      const masteredCount = getMasteredCount(reviewLog, selectedSubject);
 
       const groupedByCategory = {};
       questions.forEach((q, i) => {
@@ -413,19 +539,25 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
               <option key={key} value={key}>{SUBJECTS[key].icon} {SUBJECTS[key].name}</option>
             ))}
           </select>
-          <div className="list-summary">回答済み {answeredCount} / 全{questions.length}問</div>
+          <div className="list-summary">回答済み {answeredCount} / 全{questions.length}問 ・ 👑定着 {masteredCount}問</div>
 
           {Object.entries(groupedByCategory).map(([cat, qs]) => (
             <div key={cat}>
               <div className="list-category-header">{cat}</div>
               {qs.map((q) => {
                 const status = getQuestionStatus(q.id);
-                const statusIcon = status === "correct" ? "✅" : status === "incorrect" ? "❌" : "⬜";
+                const statusIcon = status === "mastered" ? "👑" : status === "correct" ? "✅" : status === "incorrect" ? "❌" : "⬜";
+                const mastery = getMasteryStatus(reviewLog, selectedSubject, q.id);
                 return (
                   <div key={q.id} className="question-list-item" onClick={() => onGoToQuestion(selectedSubject, q.originalIndex)}>
                     <span className="ql-num">Q{q.originalIndex + 1}</span>
-                    <span className="ql-text">{q.question.length > 40 ? q.question.substring(0, 40) + "..." : q.question}</span>
+                    <span className="ql-text">{q.question.length > 35 ? q.question.substring(0, 35) + "..." : q.question}</span>
                     <span className="ql-status">{statusIcon}</span>
+                    {!mastery.mastered && mastery.streak > 0 && (
+                      <span className="mastery-progress" title={"連続正答 " + mastery.streak + "/4"}>
+                        {[0,1,2,3].map(i => <span key={i} className={"mastery-dot" + (i < mastery.streak ? " filled" : "")} />)}
+                      </span>
+                    )}
                   </div>
                 );
               })}
@@ -435,8 +567,8 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
       );
     }
 
-    // ============ クイズ（v2: 前の問題ボタン + 正答履歴） ============
-    function QuizPage({subjectKey, questions, onResult, onBack, results, startIndex}) {
+    // ============ クイズ（v2: 前の問題ボタン + 正答履歴 + 問題制限） ============
+    function QuizPage({subjectKey, questions, onResult, onBack, results, startIndex, reviewLog, isSubjectPurchased, onGoPlan}) {
       const [idx, setIdx] = useState(0);
       const [flipped, setFlipped] = useState(false);
       const [userAnswer, setUserAnswer] = useState("");
@@ -444,23 +576,47 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
       const [judged, setJudged] = useState(null);
       const [orderedQuestions, setOrderedQuestions] = useState([]);
       const [history, setHistory] = useState([]);
+      const [isReviewMode, setIsReviewMode] = useState(false);
+
+      const purchased = isSubjectPurchased(subjectKey);
 
       useEffect(() => {
         if (startIndex !== null && startIndex !== undefined) {
           setOrderedQuestions([...questions]);
           setIdx(startIndex);
+          setIsReviewMode(false);
         } else {
-          setOrderedQuestions([...questions].sort(() => Math.random() - 0.5));
+          // 無料制限: 購入していない場合は最初の10問のみ
+          let availableQs = purchased ? [...questions] : [...questions].slice(0, FREE_LIMIT);
+          setOrderedQuestions(availableQs.sort(() => Math.random() - 0.5));
           setIdx(0);
+          setIsReviewMode(false);
         }
         setFlipped(false); setUserAnswer(""); setSelectedChoice(null); setJudged(null); setHistory([]);
-      }, [questions, startIndex]);
+      }, [questions, startIndex, purchased]);
 
       const current = orderedQuestions[idx];
       if (!current) return <div style={{textAlign:"center",padding:40,color:"#6b7280"}}>読み込み中...</div>;
       const isChoice = current.choices !== null && current.choices !== undefined;
       const labels = ["ア","イ","ウ","エ"];
       const subj = SUBJECTS[subjectKey];
+
+      // 問題制限チェック（一覧からジャンプ時）
+      const isLimited = !purchased && startIndex !== null && startIndex >= FREE_LIMIT;
+
+      if (isLimited) {
+        return (
+          <div>
+            <button className="btn-back" onClick={onBack}>← 科目一覧に戻る</button>
+            <div className="lock-card">
+              <div className="lock-icon">🔒</div>
+              <h2 className="lock-title">有料問題です</h2>
+              <p className="lock-text">この問題は有料プランの問題です。{SUBJECTS[subjectKey].name}の全問題を利用するには科目購入（¥{SUBJECT_PRICE}）が必要です。</p>
+              <button className="btn-premium" onClick={onGoPlan}>プランを見る</button>
+            </div>
+          </div>
+        );
+      }
 
       const handleFlip = () => {
         if (!flipped) {
@@ -471,10 +627,19 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
       };
 
       const handleNext = () => {
-        if (judged) onResult(subjectKey, current.id, judged === "correct");
+        if (judged) onResult(subjectKey, current.id, judged === "correct", isReviewMode);
         setHistory(prev => [...prev, idx]);
         setFlipped(false); setUserAnswer(""); setSelectedChoice(null); setJudged(null);
-        setIdx(prev => (prev + 1) % orderedQuestions.length);
+        if (idx + 1 >= orderedQuestions.length) {
+          // 最後の問題 → 無料制限バナー or ループ
+          if (!purchased && orderedQuestions.length >= FREE_LIMIT) {
+            setIdx(0); // ループ
+          } else {
+            setIdx((idx + 1) % orderedQuestions.length);
+          }
+        } else {
+          setIdx(prev => prev + 1);
+        }
       };
 
       const handlePrev = () => {
@@ -489,6 +654,7 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
 
       // v2: 正答履歴
       const questionHistory = (results || []).filter(r => r.subject === subjectKey && r.questionId === current.id).reverse().slice(0, 10);
+      const mastery = getMasteryStatus(reviewLog, subjectKey, current.id);
 
       return (
         <div>
@@ -496,6 +662,12 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
           <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
             <span style={{fontSize:24}}>{subj.icon}</span>
             <span style={{fontSize:16,fontWeight:700,color:subj.color}}>{subj.name}</span>
+            {mastery.mastered && <span style={{fontSize:16}} title="定着済み">👑</span>}
+            {!mastery.mastered && mastery.streak > 0 && (
+              <span className="mastery-progress" title={"連続正答 " + mastery.streak + "/4"}>
+                {[0,1,2,3].map(i => <span key={i} className={"mastery-dot" + (i < mastery.streak ? " filled" : "")} />)}
+              </span>
+            )}
           </div>
           <div className="progress-wrap">
             <div className="progress-bar"><div className="progress-fill" style={{width: progress+"%", background: subj.color}} /></div>
@@ -554,7 +726,7 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
                 )}
                 {questionHistory.length > 0 && (
                   <div className="history-timeline">
-                    <div className="history-timeline-title">📊 この問題の回答履歴</div>
+                    <div className="history-timeline-title">📊 この問題の回答履歴 {mastery.mastered && "👑定着済み"}</div>
                     {questionHistory.map((h, i) => (
                       <div key={i} className="history-timeline-item">
                         <span className="ht-icon">{h.correct ? "⭕" : "❌"}</span>
@@ -567,97 +739,169 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
               </div>
             )}
           </div>
+
+          {!purchased && (
+            <div className="limit-banner">
+              <div className="limit-banner-text">無料プランでは各科目{FREE_LIMIT}問まで利用できます</div>
+              <button className="limit-banner-btn" onClick={onGoPlan}>全問題を解放する →</button>
+            </div>
+          )}
         </div>
       );
     }
 
-    // ============ 成績 ============
-    function StatsPage({results, isSubscribed, onSubscribe}) {
-      if (!isSubscribed) return (
-        <div className="lock-card">
-          <div className="lock-icon">🔒</div>
-          <h2 className="lock-title">成績カウント機能</h2>
-          <p className="lock-text">成績の記録・閲覧にはPremiumプランへの登録が必要です。</p>
-          <button className="btn-premium" onClick={onSubscribe}>Premiumプランを見る</button>
-        </div>
-      );
+    // ============ 成績（無料化 + 定着度タブ追加） ============
+    function StatsPage({results, reviewLog}) {
+      const [tab, setTab] = useState("stats");
 
       const total = results.length;
       const correct = results.filter(r => r.correct).length;
       const accuracy = total > 0 ? Math.round((correct/total)*100) : 0;
+      const totalMastered = getTotalMasteredCount(reviewLog);
+      const totalQuestions = Object.keys(ALL_QUESTIONS).reduce((sum, k) => sum + ALL_QUESTIONS[k].length, 0);
 
       return (
         <div>
           <h2 className="section-title">📊 学習成績</h2>
-          <div className="stats-row">
-            <div className="stat-card"><div className="stat-num">{total}</div><div className="stat-label">総回答数</div></div>
-            <div className="stat-card"><div className="stat-num" style={{color:"#27ae60"}}>{correct}</div><div className="stat-label">正答数</div></div>
-            <div className="stat-card"><div className="stat-num" style={{color:"#2980b9"}}>{accuracy}%</div><div className="stat-label">正答率</div></div>
+          <div className="tab-bar">
+            <button className={"tab-btn" + (tab==="stats"?" active":"")} onClick={() => setTab("stats")}>成績</button>
+            <button className={"tab-btn" + (tab==="mastery"?" active":"")} onClick={() => setTab("mastery")}>👑 定着度</button>
+            <button className={"tab-btn" + (tab==="history"?" active":"")} onClick={() => setTab("history")}>履歴</button>
           </div>
 
-          <h3 className="sub-title">科目別正答率</h3>
-          {Object.entries(SUBJECTS).map(([key, subj]) => {
-            const subResults = results.filter(r => r.subject === key);
-            const subCorrect = subResults.filter(r => r.correct).length;
-            const pct = subResults.length > 0 ? Math.round((subCorrect/subResults.length)*100) : 0;
-            const qs = ALL_QUESTIONS[key] || [];
-            return (
-              <div key={key} className="subject-stats-card">
-                <div className="subject-stats-icon">{subj.icon}</div>
-                <div className="subject-stats-info">
-                  <div className="subject-stats-name">{subj.name}</div>
-                  <div className="subject-stats-detail">{subResults.length}回答 / {qs.length}問中 ・ 正答{subCorrect}</div>
-                  <div className="subject-stats-bar"><div className="subject-stats-fill" style={{width:pct+"%",background:subj.color}} /></div>
-                </div>
-                <div className="subject-stats-pct" style={{color: subResults.length > 0 ? subj.color : "#d1d5db"}}>{subResults.length > 0 ? pct+"%" : "—"}</div>
+          {tab === "stats" && (
+            <div>
+              <div className="stats-row">
+                <div className="stat-card"><div className="stat-num">{total}</div><div className="stat-label">総回答数</div></div>
+                <div className="stat-card"><div className="stat-num" style={{color:"#27ae60"}}>{correct}</div><div className="stat-label">正答数</div></div>
+                <div className="stat-card"><div className="stat-num" style={{color:"#2980b9"}}>{accuracy}%</div><div className="stat-label">正答率</div></div>
+                <div className="stat-card"><div className="stat-num" style={{color:"#b45309"}}>{totalMastered}</div><div className="stat-label">定着数</div></div>
               </div>
-            );
-          })}
 
-          <h3 className="sub-title">最近の学習履歴</h3>
-          <div className="history-list">
-            {results.length === 0 ? <p style={{padding:16,color:"#9ca3af",textAlign:"center"}}>まだ学習記録がありません</p> :
-              [...results].reverse().slice(0,30).map((r,i) => {
-                const subj = SUBJECTS[r.subject];
-                const qs = ALL_QUESTIONS[r.subject] || [];
-                const q = qs.find(q => q.id === r.questionId);
+              <h3 className="sub-title">科目別正答率</h3>
+              {Object.entries(SUBJECTS).map(([key, subj]) => {
+                const subResults = results.filter(r => r.subject === key);
+                const subCorrect = subResults.filter(r => r.correct).length;
+                const pct = subResults.length > 0 ? Math.round((subCorrect/subResults.length)*100) : 0;
+                const qs = ALL_QUESTIONS[key] || [];
+                const mastered = getMasteredCount(reviewLog, key);
                 return (
-                  <div key={i} className="history-item">
-                    <span>{r.correct ? "⭕" : "❌"}</span>
-                    <span style={{fontSize:10,marginRight:-4}}>{subj ? subj.icon : ""}</span>
-                    <span className="history-q">{q ? (q.question.length>30 ? q.question.substring(0,30)+"..." : q.question) : "不明"}</span>
-                    <span className="history-date">{formatDate(r.date)}</span>
+                  <div key={key} className="subject-stats-card">
+                    <div className="subject-stats-icon">{subj.icon}</div>
+                    <div className="subject-stats-info">
+                      <div className="subject-stats-name">{subj.name}</div>
+                      <div className="subject-stats-detail">{subResults.length}回答 / {qs.length}問中 ・ 正答{subCorrect} ・ 👑{mastered}</div>
+                      <div className="subject-stats-bar"><div className="subject-stats-fill" style={{width:pct+"%",background:subj.color}} /></div>
+                    </div>
+                    <div className="subject-stats-pct" style={{color: subResults.length > 0 ? subj.color : "#d1d5db"}}>{subResults.length > 0 ? pct+"%" : "—"}</div>
                   </div>
                 );
-              })
-            }
-          </div>
+              })}
+            </div>
+          )}
+
+          {tab === "mastery" && (
+            <div>
+              <div className="mastery-summary">
+                <div className="mastery-summary-icon">👑</div>
+                <div className="mastery-summary-title">定着した問題</div>
+                <div className="mastery-summary-num">{totalMastered} <span style={{fontSize:16,fontWeight:600}}>/ {totalQuestions}問</span></div>
+                <div className="mastery-summary-sub">
+                  {totalQuestions > 0 ? Math.round((totalMastered/totalQuestions)*100) : 0}% 定着
+                </div>
+              </div>
+
+              <p style={{fontSize:13,color:"#6b7280",marginBottom:12,lineHeight:1.6}}>
+                復習リマインドで4回連続正解すると「定着👑」となります。不正解の場合は最初からやり直しです。
+              </p>
+
+              {Object.entries(SUBJECTS).map(([key, subj]) => {
+                const qs = ALL_QUESTIONS[key] || [];
+                const mastered = getMasteredCount(reviewLog, key);
+                const pct = qs.length > 0 ? Math.round((mastered/qs.length)*100) : 0;
+                // 各streakのカウント
+                const streakCounts = [0,0,0,0,0]; // 0,1,2,3,4(mastered)
+                qs.forEach(q => {
+                  const m = getMasteryStatus(reviewLog, key, q.id);
+                  if (m.mastered) streakCounts[4]++;
+                  else if (m.streak >= 3) streakCounts[3]++;
+                  else if (m.streak >= 2) streakCounts[2]++;
+                  else if (m.streak >= 1) streakCounts[1]++;
+                  else {
+                    const hasResult = reviewLog.find(r => r.subject === key && r.questionId === q.id);
+                    if (hasResult) streakCounts[0]++;
+                  }
+                });
+                return (
+                  <div key={key} className="mastery-subject-card">
+                    <div className="mastery-subject-header">
+                      <span style={{fontSize:20}}>{subj.icon}</span>
+                      <span className="mastery-subject-name">{subj.name}</span>
+                      <span className="mastery-subject-count">👑 {mastered}/{qs.length}</span>
+                    </div>
+                    <div className="mastery-bar">
+                      <div className="mastery-bar-fill" style={{width: pct+"%"}} />
+                    </div>
+                    <div className="mastery-bar-detail">
+                      <span>定着{pct}%</span>
+                      <span>🔴{streakCounts[0]} → 1回{streakCounts[1]} → 2回{streakCounts[2]} → 3回{streakCounts[3]} → 👑{streakCounts[4]}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {tab === "history" && (
+            <div>
+              <h3 className="sub-title">最近の学習履歴</h3>
+              <div className="history-list">
+                {results.length === 0 ? <p style={{padding:16,color:"#9ca3af",textAlign:"center"}}>まだ学習記録がありません</p> :
+                  [...results].reverse().slice(0,30).map((r,i) => {
+                    const subj = SUBJECTS[r.subject];
+                    const qs = ALL_QUESTIONS[r.subject] || [];
+                    const q = qs.find(q => q.id === r.questionId);
+                    return (
+                      <div key={i} className="history-item">
+                        <span>{r.correct ? "⭕" : "❌"}</span>
+                        <span style={{fontSize:10,marginRight:-4}}>{subj ? subj.icon : ""}</span>
+                        <span className="history-q">{q ? (q.question.length>30 ? q.question.substring(0,30)+"..." : q.question) : "不明"}</span>
+                        <span className="history-date">{formatDate(r.date)}</span>
+                      </div>
+                    );
+                  })
+                }
+              </div>
+            </div>
+          )}
         </div>
       );
     }
 
-    // ============ 復習 ============
-    function ReviewPage({reviewItems, isSubscribed, onSubscribe, onStartReview}) {
-      if (!isSubscribed) return (
-        <div className="lock-card">
-          <div className="lock-icon">🔒</div>
-          <h2 className="lock-title">復習タイミング通知</h2>
-          <p className="lock-text">「最高の勉強法」に基づく最適な復習タイミング通知にはPremiumプランへの登録が必要です。</p>
-          <div className="review-schedule">
-            <h4 className="review-schedule-title">復習スケジュール</h4>
-            <div className="timeline">
-              {REVIEW_INTERVALS.map((d,i) => <div key={i} className="timeline-item"><div className="timeline-dot"/><span className="timeline-text">{d}日後</span></div>)}
-            </div>
-          </div>
-          <button className="btn-premium" onClick={onSubscribe}>Premiumプランを見る</button>
-        </div>
-      );
-
+    // ============ 復習（無料化） ============
+    function ReviewPage({reviewItems, onStartReview, reviewLog}) {
       return (
         <div>
           <h2 className="section-title">🔔 復習リマインダー</h2>
           <div className="info-card" style={{marginBottom:16}}>
-            <p className="info-text">学習した日から1日後・7日後・16日後・28日後のタイミングで復習すると効果的です。</p>
+            <p className="info-text">学習した日から1日後・7日後・16日後・28日後に復習し、4回連続正解で「定着👑」です。不正解の場合は1日後からやり直しになります。</p>
+          </div>
+          <div className="review-schedule">
+            <h4 className="review-schedule-title">定着までの道のり</h4>
+            <div className="timeline">
+              {REVIEW_INTERVALS.map((d,i) => (
+                <div key={i} className="timeline-item">
+                  <div className="timeline-dot" />
+                  <span className="timeline-text">{d}日後</span>
+                  <span style={{fontSize:10,color:"#6b7280"}}>{i+1}回目</span>
+                </div>
+              ))}
+              <div className="timeline-item">
+                <div className="timeline-dot" style={{background:"#f59e0b"}} />
+                <span className="timeline-text">👑</span>
+                <span style={{fontSize:10,color:"#6b7280"}}>定着!</span>
+              </div>
+            </div>
           </div>
           {reviewItems.length === 0 ? (
             <div className="empty-state">
@@ -667,57 +911,84 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
             </div>
           ) : (
             <div className="review-list">
-              {reviewItems.map((item,i) => {
+              <p style={{fontSize:13,color:"#6b7280",marginBottom:8}}>復習が必要な問題: {reviewItems.length}件</p>
+              {reviewItems.slice(0, 20).map((item,i) => {
                 const subj = SUBJECTS[item.subject];
+                const mastery = getMasteryStatus(reviewLog, item.subject, item.id);
                 return (
                   <div key={i} className="review-item">
                     <div className="review-item-header">
                       <span className="cat-badge-sm">{subj ? subj.icon+" "+subj.name : item.category}</span>
-                      <span className="review-timing">{item.days}日後復習</span>
+                      <span className="review-timing">{item.days}日後復習 (連続{mastery.streak}/4)</span>
                     </div>
                     <p className="review-q">{item.question}</p>
                     <p className="review-meta">学習日: {formatDate(item.studiedAt)}</p>
                   </div>
                 );
               })}
-              <button className="btn-premium" onClick={() => onStartReview(reviewItems[0].subject)}>復習を始める</button>
+              <button className="btn-premium" style={{marginTop:8}} onClick={() => onStartReview(reviewItems[0].subject)}>復習を始める</button>
             </div>
           )}
         </div>
       );
     }
 
-    // ============ サブスクリプション ============
-    function SubscriptionPage({isSubscribed, onToggle}) {
+    // ============ プラン（科目別購入） ============
+    function SubscriptionPage({purchasedSubjects, onPurchaseSubject, onPurchaseAll, isAllPurchased}) {
       return (
         <div>
-          <h2 className="section-title">⭐ プラン選択</h2>
-          <div className="plan-container">
-            <div className={"plan-card" + (!isSubscribed?" active":"")}>
-              <h3 className="plan-name">Free</h3>
-              <div className="plan-price"><span className="price-amount">¥0</span><span className="price-period">/月</span></div>
-              <ul className="plan-features">
-                <li className="plan-feature">✅ 一問一答（暗記カード）</li>
-                <li className="plan-feature">✅ 全7科目の問題</li>
-                <li className="plan-feature-off">❌ 成績カウント機能</li>
-                <li className="plan-feature-off">❌ 復習タイミング通知</li>
-              </ul>
-              {isSubscribed && <button className="btn-secondary" onClick={onToggle}>Freeに戻す</button>}
-            </div>
-            <div className={"plan-card" + (isSubscribed?" active":"")}>
-              <div className="plan-badge">おすすめ</div>
-              <h3 className="plan-name">Premium</h3>
-              <div className="plan-price"><span className="price-amount">¥980</span><span className="price-period">/月</span></div>
-              <ul className="plan-features">
-                <li className="plan-feature">✅ 一問一答（暗記カード）</li>
-                <li className="plan-feature">✅ 全7科目の問題</li>
-                <li className="plan-feature">✅ 成績カウント機能</li>
-                <li className="plan-feature">✅ 復習タイミング通知</li>
-              </ul>
-              {!isSubscribed ? <button className="btn-premium" onClick={onToggle}>Premiumに登録（テスト）</button> : <div className="current-plan">現在のプラン</div>}
-            </div>
+          <h2 className="section-title">⭐ プラン・購入</h2>
+
+          <div className="info-card" style={{marginBottom:16}}>
+            <h3 className="info-title">無料プラン</h3>
+            <p className="info-text">各科目{FREE_LIMIT}問まで無料で利用できます。成績カウント・復習リマインド・定着管理はすべて無料です。全問題を利用するには科目の購入が必要です。</p>
           </div>
-          <p className="test-note">※ これはテスト版です。実際の課金は発生しません。ボタンを押すとPremium機能が有効になります。</p>
+
+          {!isAllPurchased && (
+            <div className="pricing-card active" style={{marginBottom:16}}>
+              <div className="plan-badge">お得！</div>
+              <div className="pricing-card-header" style={{marginTop:8}}>
+                <div className="pricing-card-name">全科目セット</div>
+                <div className="pricing-card-price">¥{ALL_SUBJECTS_PRICE.toLocaleString()}</div>
+              </div>
+              <div className="pricing-card-desc">全7科目の問題がすべて利用可能（科目別購入より¥{(SUBJECT_PRICE * 7 - ALL_SUBJECTS_PRICE).toLocaleString()}お得）</div>
+              <button className="pricing-card-btn pricing-buy" onClick={onPurchaseAll}>全科目セットを購入（テスト）</button>
+            </div>
+          )}
+
+          {isAllPurchased && (
+            <div className="pricing-card active" style={{marginBottom:16}}>
+              <div className="pricing-card-header">
+                <div className="pricing-card-name">全科目セット</div>
+                <div className="pricing-card-price">購入済み</div>
+              </div>
+              <button className="pricing-card-btn pricing-bought">✅ 全科目利用可能</button>
+            </div>
+          )}
+
+          <h3 className="sub-title">科目別購入</h3>
+          <div className="pricing-grid">
+            {Object.entries(SUBJECTS).map(([key, subj]) => {
+              const qs = ALL_QUESTIONS[key] || [];
+              const bought = isAllPurchased || purchasedSubjects.includes(key);
+              return (
+                <div key={key} className={"pricing-card" + (bought?" active":"")}>
+                  <div className="pricing-card-header">
+                    <div className="pricing-card-name">{subj.icon} {subj.name}</div>
+                    <div className="pricing-card-price">{bought ? "購入済み" : "¥" + SUBJECT_PRICE}</div>
+                  </div>
+                  <div className="pricing-card-desc">{qs.length}問収録（無料: {FREE_LIMIT}問 → 購入後: 全{qs.length}問）</div>
+                  {bought ? (
+                    <button className="pricing-card-btn pricing-bought">✅ 利用可能</button>
+                  ) : (
+                    <button className="pricing-card-btn pricing-buy" onClick={() => onPurchaseSubject(key)}>購入する（テスト）</button>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          <p className="test-note">※ これはテスト版です。実際の課金は発生しません。ボタンを押すと購入状態が有効になります。</p>
         </div>
       );
     }
