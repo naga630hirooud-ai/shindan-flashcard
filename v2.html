@@ -256,7 +256,7 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
       chusho: { name: "中小企業経営・政策", icon: "🏪", color: "#be185d" },
     };
 
-    const REVIEW_INTERVALS = [1, 7, 16, 28];
+    const DEFAULT_REVIEW_INTERVALS = [1, 7, 16, 35];
     const FREE_LIMIT = 10;
     const SUBJECT_PRICE = 500;
     const ALL_SUBJECTS_PRICE = 2000;
@@ -272,10 +272,6 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
     const saveState = (key, val) => { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {} };
 
     // ============ 定着判定ヘルパー ============
-    // reviewLog のエントリ: { subject, questionId, studiedAt, streak, masteredAt? }
-    // streak: 連続正答回数（リマインド復習での正答のみカウント）
-    // masteredAt: 4回連続正答した日時
-
     function getMasteryStatus(reviewLog, subject, questionId) {
       const entry = reviewLog.find(r => r.subject === subject && r.questionId === questionId);
       if (!entry) return { streak: 0, mastered: false };
@@ -298,10 +294,12 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
       const [purchasedSubjects, setPurchasedSubjects] = useState(() => loadState("shindan_purchased", []));
       const [results, setResults] = useState(() => loadState("shindan_results", []));
       const [reviewLog, setReviewLog] = useState(() => loadState("shindan_review", []));
+      const [reviewIntervals, setReviewIntervals] = useState(() => loadState("shindan_intervals", DEFAULT_REVIEW_INTERVALS));
 
       useEffect(() => { saveState("shindan_purchased", purchasedSubjects); }, [purchasedSubjects]);
       useEffect(() => { saveState("shindan_results", results); }, [results]);
       useEffect(() => { saveState("shindan_review", reviewLog); }, [reviewLog]);
+      useEffect(() => { saveState("shindan_intervals", reviewIntervals); }, [reviewIntervals]);
 
       const isAllPurchased = purchasedSubjects.includes("all");
       const isSubjectPurchased = (key) => isAllPurchased || purchasedSubjects.includes(key);
@@ -312,23 +310,14 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
         return t;
       }, []);
 
-      // 復習リマインドロジック（改良版）
-      // 1回目: 正解不正解にかかわらずリマインド
-      // 2回目以降: 正解したものだけリマインド対象
-      // 不正解時: streakリセット、1日後からやり直し
       const getReviewItems = useCallback(() => {
         const now = new Date();
         const items = [];
         reviewLog.forEach(log => {
-          if (log.masteredAt) return; // 定着済みはスキップ
+          if (log.masteredAt) return;
           const streak = log.streak || 0;
-          // 次に復習すべきインターバルを決定
-          // streak=0: 初回学習後 → 1日後（REVIEW_INTERVALS[0]）
-          // streak=1: 1回目リマインド正答後 → 7日後（REVIEW_INTERVALS[1]）
-          // streak=2: 2回目リマインド正答後 → 16日後（REVIEW_INTERVALS[2]）
-          // streak=3: 3回目リマインド正答後 → 28日後（REVIEW_INTERVALS[3]）
-          const nextIntervalIdx = Math.min(streak, REVIEW_INTERVALS.length - 1);
-          const days = REVIEW_INTERVALS[nextIntervalIdx];
+          const nextIntervalIdx = Math.min(streak, reviewIntervals.length - 1);
+          const days = reviewIntervals[nextIntervalIdx];
           const reviewDate = addDays(log.studiedAt, days);
           const diff = (reviewDate - now) / (1000*60*60*24);
           if (diff <= 1 && diff >= -7) {
@@ -340,7 +329,7 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
           }
         });
         return items;
-      }, [reviewLog]);
+      }, [reviewLog, reviewIntervals]);
 
       const handleResult = (subject, questionId, correct, isReviewMode) => {
         setResults(prev => [...prev, {subject, questionId, correct, date: new Date().toISOString()}]);
@@ -349,21 +338,18 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
           if (existing) {
             return prev.map(r => {
               if (r.subject === subject && r.questionId === questionId) {
-                if (r.masteredAt) return r; // 既に定着済み
+                if (r.masteredAt) return r;
                 if (isReviewMode) {
-                  // リマインド復習での回答
                   if (correct) {
                     const newStreak = (r.streak || 0) + 1;
-                    if (newStreak >= 4) {
+                    if (newStreak >= reviewIntervals.length) {
                       return {...r, studiedAt: new Date().toISOString(), streak: newStreak, masteredAt: new Date().toISOString()};
                     }
                     return {...r, studiedAt: new Date().toISOString(), streak: newStreak};
                   } else {
-                    // 不正解: streakリセット、1日後からやり直し
                     return {...r, studiedAt: new Date().toISOString(), streak: 0};
                   }
                 } else {
-                  // 通常学習: studiedAtを更新（streakはリセットしない。初回学習のみ）
                   if (r.streak === undefined || r.streak === null) {
                     return {...r, studiedAt: new Date().toISOString(), streak: 0};
                   }
@@ -378,17 +364,11 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
       };
 
       const purchaseSubject = (key) => {
-        setPurchasedSubjects(prev => {
-          if (prev.includes(key)) return prev;
-          return [...prev, key];
-        });
+        setPurchasedSubjects(prev => prev.includes(key) ? prev : [...prev, key]);
       };
 
       const purchaseAll = () => {
-        setPurchasedSubjects(prev => {
-          if (prev.includes("all")) return prev;
-          return [...prev, "all"];
-        });
+        setPurchasedSubjects(prev => prev.includes("all") ? prev : [...prev, "all"]);
       };
 
       const selectSubject = (key) => {
@@ -420,7 +400,7 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
 
           <nav className="nav">
             {[{key:"home",label:"ホーム",icon:"🏠"},{key:"list",label:"一覧",icon:"📋"},{key:"stats",label:"成績",icon:"📊"},{key:"review",label:"復習",icon:"🔔"},{key:"subscription",label:"プラン",icon:"⭐"}].map(item => (
-              <button key={item.key} onClick={() => { setPage(item.key); if(item.key==="home") { setSelectedSubject(null); setStartQuestionIndex(null); } }} className={"nav-btn" + (page===item.key?" active":"")}>
+              <button key={item.key} onClick={() => { setPage(item.key); if(item.key==="home") { setSelectedSubject(null); setStartQuestionIndex(null); } }} className={"nav-btn" + (page===item.key || (page==="settings" && item.key==="review") ?" active":"")}>
                 <span className="nav-icon">{item.icon}</span>
                 <span className="nav-label">{item.label}</span>
               </button>
@@ -429,11 +409,12 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
 
           <main className="main">
             {page==="home" && <HomePage onSelect={selectSubject} totalQ={totalQuestions} totalA={results.length} reviewCount={getReviewItems().length} results={results} reviewLog={reviewLog} isSubjectPurchased={isSubjectPurchased} />}
-            {page==="quiz" && selectedSubject && <QuizPage subjectKey={selectedSubject} questions={ALL_QUESTIONS[selectedSubject] || []} onResult={handleResult} onBack={goHome} results={results} startIndex={startQuestionIndex} reviewLog={reviewLog} isSubjectPurchased={isSubjectPurchased} onGoPlan={() => setPage("subscription")} />}
+            {page==="quiz" && selectedSubject && <QuizPage subjectKey={selectedSubject} questions={ALL_QUESTIONS[selectedSubject] || []} onResult={handleResult} onBack={goHome} results={results} startIndex={startQuestionIndex} reviewLog={reviewLog} isSubjectPurchased={isSubjectPurchased} onGoPlan={() => setPage("subscription")} reviewIntervals={reviewIntervals} />}
             {page==="quiz" && !selectedSubject && <SubjectSelectPage onSelect={selectSubject} results={results} />}
             {page==="list" && <QuestionListPage results={results} onGoToQuestion={goToQuestion} reviewLog={reviewLog} />}
-            {page==="stats" && <StatsPage results={results} reviewLog={reviewLog} />}
-            {page==="review" && <ReviewPage reviewItems={getReviewItems()} onStartReview={(subj) => { setSelectedSubject(subj); setStartQuestionIndex(null); setPage("quiz"); }} reviewLog={reviewLog} />}
+            {page==="stats" && <StatsPage results={results} reviewLog={reviewLog} reviewIntervals={reviewIntervals} />}
+            {page==="review" && <ReviewPage reviewItems={getReviewItems()} onStartReview={(subj) => { setSelectedSubject(subj); setStartQuestionIndex(null); setPage("quiz"); }} reviewLog={reviewLog} reviewIntervals={reviewIntervals} onGoSettings={() => setPage("settings")} />}
+            {page==="settings" && <SettingsPage reviewIntervals={reviewIntervals} onUpdateIntervals={setReviewIntervals} onBack={() => setPage("review")} />}
             {page==="subscription" && <SubscriptionPage purchasedSubjects={purchasedSubjects} onPurchaseSubject={purchaseSubject} onPurchaseAll={purchaseAll} isAllPurchased={isAllPurchased} />}
           </main>
         </div>
@@ -475,7 +456,7 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
 
           <div className="info-card">
             <h3 className="info-title">学習のポイント</h3>
-            <p className="info-text">「最高の勉強法」（安川康介 著）に基づく復習スケジュールで効率的に記憶を定着させましょう。学習した1日後、7日後、16日後、28日後に復習し、4回連続正解すると「定着👑」となります。</p>
+            <p className="info-text">復習スケジュールで効率的に記憶を定着させましょう。復習リマインドで連続正解すると「定着👑」となります。復習間隔は設定で自由にカスタマイズできます。</p>
           </div>
         </div>
       );
@@ -506,7 +487,7 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
       );
     }
 
-    // ============ 問題一覧（v2: 王冠マーク付き） ============
+    // ============ 問題一覧（王冠マーク付き） ============
     function QuestionListPage({results, onGoToQuestion, reviewLog}) {
       const subjectKeys = Object.keys(SUBJECTS);
       const [selectedSubject, setSelectedSubject] = useState(subjectKeys[0]);
@@ -567,8 +548,8 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
       );
     }
 
-    // ============ クイズ（v2: 前の問題ボタン + 正答履歴 + 問題制限） ============
-    function QuizPage({subjectKey, questions, onResult, onBack, results, startIndex, reviewLog, isSubjectPurchased, onGoPlan}) {
+    // ============ クイズ ============
+    function QuizPage({subjectKey, questions, onResult, onBack, results, startIndex, reviewLog, isSubjectPurchased, onGoPlan, reviewIntervals}) {
       const [idx, setIdx] = useState(0);
       const [flipped, setFlipped] = useState(false);
       const [userAnswer, setUserAnswer] = useState("");
@@ -586,7 +567,6 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
           setIdx(startIndex);
           setIsReviewMode(false);
         } else {
-          // 無料制限: 購入していない場合は最初の10問のみ
           let availableQs = purchased ? [...questions] : [...questions].slice(0, FREE_LIMIT);
           setOrderedQuestions(availableQs.sort(() => Math.random() - 0.5));
           setIdx(0);
@@ -601,7 +581,6 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
       const labels = ["ア","イ","ウ","エ"];
       const subj = SUBJECTS[subjectKey];
 
-      // 問題制限チェック（一覧からジャンプ時）
       const isLimited = !purchased && startIndex !== null && startIndex >= FREE_LIMIT;
 
       if (isLimited) {
@@ -631,12 +610,7 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
         setHistory(prev => [...prev, idx]);
         setFlipped(false); setUserAnswer(""); setSelectedChoice(null); setJudged(null);
         if (idx + 1 >= orderedQuestions.length) {
-          // 最後の問題 → 無料制限バナー or ループ
-          if (!purchased && orderedQuestions.length >= FREE_LIMIT) {
-            setIdx(0); // ループ
-          } else {
-            setIdx((idx + 1) % orderedQuestions.length);
-          }
+          setIdx(0);
         } else {
           setIdx(prev => prev + 1);
         }
@@ -651,8 +625,6 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
       };
 
       const progress = ((idx + 1) / orderedQuestions.length) * 100;
-
-      // v2: 正答履歴
       const questionHistory = (results || []).filter(r => r.subject === subjectKey && r.questionId === current.id).reverse().slice(0, 10);
       const mastery = getMasteryStatus(reviewLog, subjectKey, current.id);
 
@@ -664,8 +636,8 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
             <span style={{fontSize:16,fontWeight:700,color:subj.color}}>{subj.name}</span>
             {mastery.mastered && <span style={{fontSize:16}} title="定着済み">👑</span>}
             {!mastery.mastered && mastery.streak > 0 && (
-              <span className="mastery-progress" title={"連続正答 " + mastery.streak + "/4"}>
-                {[0,1,2,3].map(i => <span key={i} className={"mastery-dot" + (i < mastery.streak ? " filled" : "")} />)}
+              <span className="mastery-progress" title={"連続正答 " + mastery.streak + "/" + reviewIntervals.length}>
+                {reviewIntervals.map((_, i) => <span key={i} className={"mastery-dot" + (i < mastery.streak ? " filled" : "")} />)}
               </span>
             )}
           </div>
@@ -750,8 +722,8 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
       );
     }
 
-    // ============ 成績（無料化 + 定着度タブ追加） ============
-    function StatsPage({results, reviewLog}) {
+    // ============ 成績（定着度タブ付き） ============
+    function StatsPage({results, reviewLog, reviewIntervals}) {
       const [tab, setTab] = useState("stats");
 
       const total = results.length;
@@ -759,6 +731,7 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
       const accuracy = total > 0 ? Math.round((correct/total)*100) : 0;
       const totalMastered = getTotalMasteredCount(reviewLog);
       const totalQuestions = Object.keys(ALL_QUESTIONS).reduce((sum, k) => sum + ALL_QUESTIONS[k].length, 0);
+      const requiredStreak = reviewIntervals.length;
 
       return (
         <div>
@@ -812,24 +785,24 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
               </div>
 
               <p style={{fontSize:13,color:"#6b7280",marginBottom:12,lineHeight:1.6}}>
-                復習リマインドで4回連続正解すると「定着👑」となります。不正解の場合は最初からやり直しです。
+                復習リマインドで{requiredStreak}回連続正解すると「定着👑」となります。不正解の場合は最初からやり直しです。<br/>
+                現在の復習間隔: {reviewIntervals.map(d => d + "日後").join(" → ")} → 👑
               </p>
 
               {Object.entries(SUBJECTS).map(([key, subj]) => {
                 const qs = ALL_QUESTIONS[key] || [];
                 const mastered = getMasteredCount(reviewLog, key);
                 const pct = qs.length > 0 ? Math.round((mastered/qs.length)*100) : 0;
-                // 各streakのカウント
-                const streakCounts = [0,0,0,0,0]; // 0,1,2,3,4(mastered)
+                const streakCounts = new Array(requiredStreak + 1).fill(0);
                 qs.forEach(q => {
                   const m = getMasteryStatus(reviewLog, key, q.id);
-                  if (m.mastered) streakCounts[4]++;
-                  else if (m.streak >= 3) streakCounts[3]++;
-                  else if (m.streak >= 2) streakCounts[2]++;
-                  else if (m.streak >= 1) streakCounts[1]++;
+                  if (m.mastered) streakCounts[requiredStreak]++;
                   else {
-                    const hasResult = reviewLog.find(r => r.subject === key && r.questionId === q.id);
-                    if (hasResult) streakCounts[0]++;
+                    const hasEntry = reviewLog.find(r => r.subject === key && r.questionId === q.id);
+                    if (hasEntry) {
+                      const s = Math.min(m.streak, requiredStreak - 1);
+                      streakCounts[s]++;
+                    }
                   }
                 });
                 return (
@@ -844,7 +817,13 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
                     </div>
                     <div className="mastery-bar-detail">
                       <span>定着{pct}%</span>
-                      <span>🔴{streakCounts[0]} → 1回{streakCounts[1]} → 2回{streakCounts[2]} → 3回{streakCounts[3]} → 👑{streakCounts[4]}</span>
+                      <span>
+                        {streakCounts.map((c, i) => {
+                          if (i === requiredStreak) return "👑" + c;
+                          if (i === 0) return "🔴" + c;
+                          return i + "回" + c;
+                        }).join(" → ")}
+                      </span>
                     </div>
                   </div>
                 );
@@ -878,18 +857,21 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
       );
     }
 
-    // ============ 復習（無料化） ============
-    function ReviewPage({reviewItems, onStartReview, reviewLog}) {
+    // ============ 復習 ============
+    function ReviewPage({reviewItems, onStartReview, reviewLog, reviewIntervals, onGoSettings}) {
       return (
         <div>
           <h2 className="section-title">🔔 復習リマインダー</h2>
           <div className="info-card" style={{marginBottom:16}}>
-            <p className="info-text">学習した日から1日後・7日後・16日後・28日後に復習し、4回連続正解で「定着👑」です。不正解の場合は1日後からやり直しになります。</p>
+            <p className="info-text">復習リマインドで{reviewIntervals.length}回連続正解すると「定着👑」です。不正解の場合は1回目からやり直しになります。</p>
           </div>
           <div className="review-schedule">
-            <h4 className="review-schedule-title">定着までの道のり</h4>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+              <h4 className="review-schedule-title" style={{margin:0}}>定着までの道のり</h4>
+              <button onClick={onGoSettings} style={{background:"none",border:"1px solid #d1d5db",borderRadius:8,padding:"4px 12px",fontSize:12,fontWeight:600,color:"#6b7280",cursor:"pointer"}}>⚙️ 間隔設定</button>
+            </div>
             <div className="timeline">
-              {REVIEW_INTERVALS.map((d,i) => (
+              {reviewIntervals.map((d,i) => (
                 <div key={i} className="timeline-item">
                   <div className="timeline-dot" />
                   <span className="timeline-text">{d}日後</span>
@@ -919,7 +901,7 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
                   <div key={i} className="review-item">
                     <div className="review-item-header">
                       <span className="cat-badge-sm">{subj ? subj.icon+" "+subj.name : item.category}</span>
-                      <span className="review-timing">{item.days}日後復習 (連続{mastery.streak}/4)</span>
+                      <span className="review-timing">{item.days}日後復習 (連続{mastery.streak}/{reviewIntervals.length})</span>
                     </div>
                     <p className="review-q">{item.question}</p>
                     <p className="review-meta">学習日: {formatDate(item.studiedAt)}</p>
@@ -929,6 +911,109 @@ const ALL_QUESTIONS = {"keizai":[{"id":1,"category":"ミクロ経済学","questi
               <button className="btn-premium" style={{marginTop:8}} onClick={() => onStartReview(reviewItems[0].subject)}>復習を始める</button>
             </div>
           )}
+        </div>
+      );
+    }
+
+    // ============ 復習間隔設定 ============
+    function SettingsPage({reviewIntervals, onUpdateIntervals, onBack}) {
+      const [intervals, setIntervals] = useState([...reviewIntervals]);
+      const [saved, setSaved] = useState(false);
+
+      const handleChange = (index, value) => {
+        const num = parseInt(value, 10);
+        if (isNaN(num) || num < 1) return;
+        setIntervals(prev => {
+          const next = [...prev];
+          next[index] = num;
+          return next;
+        });
+        setSaved(false);
+      };
+
+      const addInterval = () => {
+        const lastVal = intervals[intervals.length - 1] || 1;
+        setIntervals(prev => [...prev, lastVal + 14]);
+        setSaved(false);
+      };
+
+      const removeInterval = (index) => {
+        if (intervals.length <= 2) return;
+        setIntervals(prev => prev.filter((_, i) => i !== index));
+        setSaved(false);
+      };
+
+      const handleSave = () => {
+        const sorted = [...intervals].sort((a, b) => a - b);
+        onUpdateIntervals(sorted);
+        setIntervals(sorted);
+        setSaved(true);
+      };
+
+      const handleReset = () => {
+        setIntervals([...DEFAULT_REVIEW_INTERVALS]);
+        setSaved(false);
+      };
+
+      return (
+        <div>
+          <button className="btn-back" onClick={onBack}>← 復習に戻る</button>
+          <h2 className="section-title">⚙️ 復習間隔の設定</h2>
+
+          <div className="info-card" style={{marginBottom:16}}>
+            <p className="info-text">復習の間隔を自由に設定できます。設定した回数分すべて連続正解すると「定着👑」となります。</p>
+          </div>
+
+          <div style={{background:"#fff",borderRadius:12,padding:20,boxShadow:"0 1px 3px rgba(0,0,0,0.08)",marginBottom:16}}>
+            {intervals.map((val, i) => (
+              <div key={i} style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
+                <span style={{fontSize:13,fontWeight:700,color:"#6b7280",minWidth:60}}>{i+1}回目</span>
+                <input
+                  type="number"
+                  value={val}
+                  min="1"
+                  onChange={e => handleChange(i, e.target.value)}
+                  style={{flex:1,padding:"10px 14px",border:"2px solid #e5e7eb",borderRadius:10,fontSize:16,fontWeight:600,textAlign:"center"}}
+                />
+                <span style={{fontSize:13,color:"#6b7280"}}>日後</span>
+                {intervals.length > 2 && (
+                  <button onClick={() => removeInterval(i)} style={{background:"#f8d7da",color:"#721c24",border:"none",borderRadius:8,padding:"6px 10px",fontSize:14,cursor:"pointer",fontWeight:700}}>×</button>
+                )}
+              </div>
+            ))}
+
+            <div style={{display:"flex",gap:8,marginTop:16}}>
+              <button onClick={addInterval} style={{flex:1,padding:"10px 0",background:"#f3f4f6",color:"#374151",border:"none",borderRadius:10,fontSize:14,fontWeight:700,cursor:"pointer"}}>+ 回数を追加</button>
+              <button onClick={handleReset} style={{flex:1,padding:"10px 0",background:"#f3f4f6",color:"#6b7280",border:"none",borderRadius:10,fontSize:14,fontWeight:600,cursor:"pointer"}}>初期値に戻す</button>
+            </div>
+          </div>
+
+          <div style={{background:"#f8fafc",borderRadius:12,padding:16,marginBottom:16}}>
+            <p style={{fontSize:13,fontWeight:700,color:"#374151",marginBottom:8}}>プレビュー</p>
+            <div className="timeline">
+              {[...intervals].sort((a,b) => a-b).map((d,i) => (
+                <div key={i} className="timeline-item">
+                  <div className="timeline-dot" />
+                  <span className="timeline-text">{d}日後</span>
+                  <span style={{fontSize:10,color:"#6b7280"}}>{i+1}回目</span>
+                </div>
+              ))}
+              <div className="timeline-item">
+                <div className="timeline-dot" style={{background:"#f59e0b"}} />
+                <span className="timeline-text">👑</span>
+                <span style={{fontSize:10,color:"#6b7280"}}>定着!</span>
+              </div>
+            </div>
+          </div>
+
+          <button className="btn-action" onClick={handleSave} style={{marginBottom:8}}>
+            {saved ? "✅ 保存しました！" : "保存する"}
+          </button>
+
+          <p style={{fontSize:12,color:"#9ca3af",textAlign:"center",lineHeight:1.6}}>
+            デフォルト: {DEFAULT_REVIEW_INTERVALS.map(d => d + "日後").join(" → ")} → 👑<br/>
+            ※ 保存時に日数は自動で昇順に並び替えられます
+          </p>
         </div>
       );
     }
