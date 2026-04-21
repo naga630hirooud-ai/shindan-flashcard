@@ -2,9 +2,9 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#1a365d" />
-  <title>中小企業診断士 一問一答</title>
+  <title>中小企業診断士 一問一答 v2</title>
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.2/babel.min.js"></script>
@@ -16,23 +16,25 @@
     .header { background: linear-gradient(135deg, #1a365d 0%, #2563eb 100%); padding: 16px 20px; position: sticky; top: 0; z-index: 100; }
     .header-inner { display: flex; justify-content: space-between; align-items: center; }
     .header-title { color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; }
+    .badge-premium { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 700; }
+    .badge-free { background: rgba(255,255,255,0.2); color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; }
 
-    .nav { display: flex; justify-content: space-around; background: #fff; padding: 8px 4px; position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; z-index: 100; border-top: 1px solid #e5e7eb; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
-    .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 2px; background: none; border: none; cursor: pointer; padding: 6px 8px; border-radius: 8px; color: #9ca3af; font-size: 10px; transition: all 0.2s; }
+    .nav { display: flex; justify-content: space-around; background: #fff; padding: 6px 2px calc(6px + env(safe-area-inset-bottom, 16px)); position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; z-index: 100; border-top: 1px solid #e5e7eb; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
+    .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 1px; background: none; border: none; cursor: pointer; padding: 4px 6px; border-radius: 8px; color: #9ca3af; font-size: 10px; transition: all 0.2s; }
     .nav-btn.active { color: #2563eb; background: #eff6ff; }
-    .nav-icon { font-size: 20px; }
-    .nav-label { font-weight: 600; }
+    .nav-icon { font-size: 18px; }
+    .nav-label { font-weight: 600; font-size: 9px; }
 
-    .main { padding: 16px; padding-bottom: 80px; }
+    .main { padding: 16px; padding-bottom: calc(80px + env(safe-area-inset-bottom, 16px)); }
 
-    /* Hero */
+    /* ホーム - ヒーロー */
     .hero { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 16px; padding: 28px 24px; text-align: center; color: #fff; margin-bottom: 16px; }
     .hero-emoji { font-size: 40px; margin-bottom: 8px; }
     .hero-title { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
     .hero-sub { font-size: 13px; opacity: 0.9; margin-bottom: 4px; }
     .hero-count { font-size: 12px; opacity: 0.7; }
 
-    /* Subject cards */
+    /* 科目カード */
     .subject-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
     .subject-card { display: flex; align-items: center; gap: 14px; background: #fff; border-radius: 14px; padding: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); cursor: pointer; transition: all 0.15s; border-left: 4px solid transparent; }
     .subject-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); transform: translateY(-1px); }
@@ -43,14 +45,16 @@
     .subject-meta { font-size: 12px; color: #9ca3af; }
     .subject-arrow { color: #d1d5db; font-size: 18px; font-weight: 700; }
 
-    /* Buttons */
+    /* ボタン */
     .btn-primary { background: #fff; color: #1e40af; border: none; padding: 12px 32px; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; }
     .btn-action { width: 100%; padding: 14px 0; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; }
     .btn-next { width: 100%; padding: 14px 0; background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; }
+    .btn-premium { width: 100%; padding: 12px 0; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; }
     .btn-secondary { width: 100%; padding: 12px 0; background: #f3f4f6; color: #374151; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; }
     .btn-back { display: inline-flex; align-items: center; gap: 6px; background: none; border: none; color: #6b7280; font-size: 14px; font-weight: 600; cursor: pointer; padding: 4px 0; margin-bottom: 12px; }
+    .btn-prev { display: inline-flex; align-items: center; justify-content: center; width: auto; padding: 12px 20px; background: #f3f4f6; color: #374151; border: none; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; }
 
-    /* Stats */
+    /* 統計カード */
     .stats-row { display: flex; gap: 10px; margin-bottom: 16px; }
     .stat-card { flex: 1; background: #fff; border-radius: 12px; padding: 14px 8px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
     .stat-num { font-size: 24px; font-weight: 800; color: #1e40af; }
@@ -59,7 +63,7 @@
     .info-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: #1e293b; }
     .info-text { font-size: 14px; line-height: 1.7; color: #4b5563; }
 
-    /* Quiz */
+    /* クイズ */
     .progress-wrap { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
     .progress-bar { flex: 1; height: 6px; background: #e5e7eb; border-radius: 3px; overflow: hidden; }
     .progress-fill { height: 100%; background: #2563eb; border-radius: 3px; transition: width 0.3s; }
@@ -92,38 +96,68 @@
     .judge-ok { background: #d4edda; color: #155724; }
     .judge-ng { background: #f8d7da; color: #721c24; }
 
-    /* 3-level difficulty rating */
-    .rating-section { text-align: center; margin-bottom: 16px; padding: 16px; background: #f8fafc; border-radius: 12px; }
-    .rating-label { font-size: 14px; font-weight: 600; color: #374151; margin-bottom: 12px; }
-    .rating-btns { display: flex; gap: 8px; justify-content: center; }
-    .rating-btn { flex: 1; padding: 12px 8px; border-radius: 12px; border: 2px solid #e5e7eb; background: #fff; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.15s; }
-    .rating-btn:active { transform: scale(0.96); }
-    .rating-easy { color: #059669; }
-    .rating-easy.selected, .rating-easy:hover { border-color: #059669; background: #ecfdf5; }
-    .rating-normal { color: #2563eb; }
-    .rating-normal.selected, .rating-normal:hover { border-color: #2563eb; background: #eff6ff; }
-    .rating-hard { color: #dc2626; }
-    .rating-hard.selected, .rating-hard:hover { border-color: #dc2626; background: #fef2f2; }
-
-    /* Step progress indicator */
-    .step-progress { display: flex; align-items: center; gap: 4px; margin-bottom: 8px; }
-    .step-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; border: 2px solid #e5e7eb; color: #9ca3af; background: #fff; }
-    .step-dot.active { border-color: #2563eb; background: #2563eb; color: #fff; }
-    .step-dot.done { border-color: #10b981; background: #10b981; color: #fff; }
-    .step-dot.mastered { border-color: #f59e0b; background: #f59e0b; color: #fff; }
-    .step-line { flex: 1; height: 2px; background: #e5e7eb; }
-    .step-line.done { background: #10b981; }
-
-    /* Stats section */
+    /* 成績 */
     .section-title { font-size: 20px; font-weight: 800; color: #1e293b; margin-bottom: 16px; }
     .sub-title { font-size: 16px; font-weight: 700; color: #374151; margin: 20px 0 12px; }
     .stats-table { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .stats-row-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid #f3f4f6; gap: 12px; }
+    .stats-left { flex: 1; min-width: 0; }
+    .stats-cat { display: inline-block; font-size: 10px; background: #eff6ff; color: #1e40af; padding: 2px 8px; border-radius: 8px; font-weight: 600; margin-bottom: 4px; }
+    .stats-q { display: block; font-size: 13px; color: #374151; line-height: 1.4; }
+    .stats-right { display: flex; align-items: center; gap: 8px; min-width: 100px; }
+    .mini-bar { width: 60px; height: 6px; background: #e5e7eb; border-radius: 3px; overflow: hidden; }
+    .mini-bar-fill { height: 100%; background: #10b981; border-radius: 3px; }
+    .stats-ratio { font-size: 13px; font-weight: 600; color: #374151; white-space: nowrap; }
+    .stats-nodata { font-size: 12px; color: #9ca3af; }
+
     .history-list { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
     .history-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid #f3f4f6; font-size: 13px; }
     .history-q { flex: 1; color: #374151; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .history-date { color: #9ca3af; font-size: 11px; white-space: nowrap; }
 
-    /* Subject stats */
+    /* ロック */
+    .lock-card { background: #fff; border-radius: 16px; padding: 40px 24px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+    .lock-icon { font-size: 48px; margin-bottom: 16px; }
+    .lock-title { font-size: 20px; font-weight: 800; color: #1e293b; margin-bottom: 12px; }
+    .lock-text { font-size: 14px; line-height: 1.7; color: #6b7280; margin-bottom: 24px; }
+
+    /* 復習 */
+    .review-schedule { background: #f8fafc; border-radius: 12px; padding: 20px; margin: 16px 0 24px; }
+    .review-schedule-title { font-size: 14px; font-weight: 700; margin-bottom: 12px; color: #374151; }
+    .timeline { display: flex; align-items: center; justify-content: space-between; }
+    .timeline-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .timeline-dot { width: 12px; height: 12px; border-radius: 50%; background: #2563eb; }
+    .timeline-text { font-size: 13px; font-weight: 600; color: #374151; }
+
+    .empty-state { text-align: center; padding: 40px 0; }
+    .empty-emoji { font-size: 48px; margin-bottom: 12px; }
+    .empty-title { font-size: 16px; font-weight: 700; color: #374151; margin-bottom: 8px; }
+    .empty-text { font-size: 14px; color: #9ca3af; margin-bottom: 20px; }
+
+    .review-list { display: flex; flex-direction: column; gap: 12px; }
+    .review-item { background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .review-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .cat-badge-sm { font-size: 11px; background: #dbeafe; color: #1e40af; padding: 2px 10px; border-radius: 10px; font-weight: 600; }
+    .review-timing { font-size: 12px; color: #f59e0b; font-weight: 700; }
+    .review-q { font-size: 14px; color: #1e293b; line-height: 1.6; margin-bottom: 8px; }
+    .review-meta { font-size: 12px; color: #9ca3af; }
+
+    /* サブスク */
+    .plan-container { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+    .plan-card { background: #fff; border-radius: 16px; padding: 24px 16px; border: 2px solid #e5e7eb; text-align: center; position: relative; transition: all 0.2s; }
+    .plan-card.active { border-color: #2563eb; box-shadow: 0 4px 20px rgba(37,99,235,0.15); }
+    .plan-badge { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; padding: 4px 14px; border-radius: 12px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+    .plan-name { font-size: 20px; font-weight: 800; color: #1e293b; margin: 8px 0 12px; }
+    .plan-price { margin-bottom: 16px; }
+    .price-amount { font-size: 28px; font-weight: 800; color: #1e40af; }
+    .price-period { font-size: 14px; color: #6b7280; }
+    .plan-features { list-style: none; padding: 0; margin: 0 0 20px; text-align: left; }
+    .plan-feature { font-size: 13px; padding: 6px 0; color: #374151; }
+    .plan-feature-off { font-size: 13px; padding: 6px 0; color: #d1d5db; }
+    .current-plan { padding: 12px 0; color: #2563eb; font-size: 15px; font-weight: 700; }
+    .test-note { font-size: 13px; color: #9ca3af; text-align: center; line-height: 1.6; }
+
+    /* 科目別統計 */
     .subject-stats-card { background: #fff; border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); display: flex; align-items: center; gap: 12px; }
     .subject-stats-icon { font-size: 24px; }
     .subject-stats-info { flex: 1; }
@@ -133,53 +167,101 @@
     .subject-stats-fill { height: 100%; border-radius: 2px; }
     .subject-stats-pct { font-size: 16px; font-weight: 800; min-width: 48px; text-align: right; }
 
-    /* Review page */
-    .review-schedule { background: #f8fafc; border-radius: 12px; padding: 20px; margin: 16px 0 24px; }
-    .review-schedule-title { font-size: 14px; font-weight: 700; margin-bottom: 12px; color: #374151; }
-    .empty-state { text-align: center; padding: 40px 0; }
-    .empty-emoji { font-size: 48px; margin-bottom: 12px; }
-    .empty-title { font-size: 16px; font-weight: 700; color: #374151; margin-bottom: 8px; }
-    .empty-text { font-size: 14px; color: #9ca3af; margin-bottom: 20px; }
-    .review-list { display: flex; flex-direction: column; gap: 12px; }
-    .review-item { background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-    .review-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .cat-badge-sm { font-size: 11px; background: #dbeafe; color: #1e40af; padding: 2px 10px; border-radius: 10px; font-weight: 600; }
-    .review-timing { font-size: 12px; font-weight: 700; }
-    .review-q { font-size: 14px; color: #1e293b; line-height: 1.6; margin-bottom: 8px; }
-    .review-meta { font-size: 12px; color: #9ca3af; }
+    /* v2: 問題一覧 */
+    .list-subject-select { width: 100%; padding: 10px 14px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 15px; font-weight: 600; color: #1e293b; background: #fff; margin-bottom: 12px; cursor: pointer; }
+    .list-summary { font-size: 13px; color: #6b7280; margin-bottom: 12px; font-weight: 600; }
+    .list-category-header { font-size: 14px; font-weight: 700; color: #1e40af; padding: 10px 0 6px; border-bottom: 2px solid #dbeafe; margin-bottom: 6px; }
+    .question-list-item { display: flex; align-items: center; gap: 10px; background: #fff; padding: 10px 14px; border-radius: 10px; margin-bottom: 4px; cursor: pointer; transition: all 0.15s; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+    .question-list-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); transform: translateY(-1px); }
+    .question-list-item:active { transform: scale(0.98); }
+    .ql-num { font-size: 11px; font-weight: 700; color: #9ca3af; min-width: 28px; }
+    .ql-text { flex: 1; font-size: 13px; color: #374151; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ql-status { font-size: 16px; min-width: 24px; text-align: center; }
 
-    /* Filter tabs */
-    .filter-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-    .filter-tab { padding: 6px 14px; border-radius: 20px; border: 1px solid #e5e7eb; background: #fff; font-size: 13px; font-weight: 600; cursor: pointer; color: #6b7280; transition: all 0.15s; }
-    .filter-tab.active { background: #2563eb; color: #fff; border-color: #2563eb; }
-    .filter-tab.hard-active { background: #dc2626; color: #fff; border-color: #dc2626; }
+    /* v2: 正答履歴タイムライン */
+    .history-timeline { margin-top: 16px; padding: 12px; background: #f8fafc; border-radius: 12px; }
+    .history-timeline-title { font-size: 13px; font-weight: 700; color: #6b7280; margin-bottom: 8px; }
+    .history-timeline-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 12px; }
+    .ht-icon { font-size: 14px; }
+    .ht-date { color: #9ca3af; }
+    .ht-label { font-weight: 600; }
+    .ht-correct { color: #155724; }
+    .ht-incorrect { color: #721c24; }
 
-    /* Mastered badge */
-    .mastered-badge { display: inline-flex; align-items: center; gap: 4px; background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; padding: 2px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; }
-    .hard-badge { display: inline-flex; align-items: center; gap: 4px; background: #fef2f2; color: #dc2626; padding: 2px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; border: 1px solid #fecaca; }
+    /* v2: ナビボタン行 */
+    .quiz-nav-btns { display: flex; gap: 8px; margin-top: 12px; }
+    .quiz-nav-btns .btn-prev { flex: 0 0 auto; }
+    .quiz-nav-btns .btn-next { flex: 1; }
 
-    /* How it works card */
-    .how-card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 16px; }
-    .how-step { display: flex; gap: 12px; align-items: flex-start; padding: 8px 0; }
-    .how-num { width: 24px; height: 24px; border-radius: 50%; background: #2563eb; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
-    .how-text { font-size: 13px; color: #374151; line-height: 1.6; }
-    .how-arrow { text-align: center; font-size: 18px; color: #2563eb; margin: 4px 0; font-weight: 700; }
+    /* v3: 定着関連 */
+    .mastery-crown { font-size: 16px; }
+    .mastery-progress { display: flex; gap: 3px; align-items: center; }
+    .mastery-dot { width: 8px; height: 8px; border-radius: 50%; background: #e5e7eb; }
+    .mastery-dot.filled { background: #f59e0b; }
+    .mastery-dot.mastered { background: #f59e0b; }
+
+    /* v3: 定着度ページ */
+    .mastery-summary { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 16px; padding: 24px; text-align: center; margin-bottom: 16px; }
+    .mastery-summary-icon { font-size: 48px; margin-bottom: 8px; }
+    .mastery-summary-title { font-size: 20px; font-weight: 800; color: #92400e; margin-bottom: 4px; }
+    .mastery-summary-num { font-size: 36px; font-weight: 800; color: #b45309; }
+    .mastery-summary-sub { font-size: 13px; color: #92400e; margin-top: 4px; }
+    .mastery-subject-card { background: #fff; border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    .mastery-subject-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .mastery-subject-name { font-size: 14px; font-weight: 700; color: #1e293b; flex: 1; }
+    .mastery-subject-count { font-size: 14px; font-weight: 800; color: #b45309; }
+    .mastery-bar { width: 100%; height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; }
+    .mastery-bar-fill { height: 100%; background: linear-gradient(90deg, #f59e0b, #d97706); border-radius: 4px; transition: width 0.3s; }
+    .mastery-bar-detail { display: flex; justify-content: space-between; margin-top: 4px; font-size: 11px; color: #6b7280; }
+
+    /* v3: 料金プラン */
+    .pricing-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+    .pricing-card { background: #fff; border-radius: 16px; padding: 20px; border: 2px solid #e5e7eb; position: relative; transition: all 0.2s; }
+    .pricing-card.active { border-color: #2563eb; box-shadow: 0 4px 20px rgba(37,99,235,0.15); }
+    .pricing-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .pricing-card-name { font-size: 16px; font-weight: 700; color: #1e293b; }
+    .pricing-card-price { font-size: 20px; font-weight: 800; color: #1e40af; }
+    .pricing-card-desc { font-size: 13px; color: #6b7280; margin-bottom: 12px; }
+    .pricing-card-btn { width: 100%; padding: 10px 0; border-radius: 10px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .pricing-bought { background: #d4edda; color: #155724; }
+    .pricing-buy { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff; }
+
+    /* v3: タブ切替 */
+    .tab-bar { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; }
+    .tab-btn { padding: 8px 16px; border-radius: 20px; border: 2px solid #e5e7eb; background: #fff; font-size: 13px; font-weight: 600; color: #6b7280; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+    .tab-btn.active { border-color: #2563eb; background: #eff6ff; color: #2563eb; }
+
+    /* v3: 問題制限バナー */
+    .limit-banner { background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 12px; padding: 16px; text-align: center; margin-top: 16px; }
+    .limit-banner-text { font-size: 14px; font-weight: 600; color: #92400e; margin-bottom: 8px; }
+    .limit-banner-btn { padding: 10px 24px; border-radius: 10px; border: none; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; }
   </style>
 </head>
 <body>
-  <div id="root"><div style="padding:40px;text-align:center;color:#6b7280;">読み込み中...</div></div>
-  <script src="questions-data.js"></script>
+  <div id="root"></div>
   <script>
-  // questions-data.js が読み込めなかった場合のフォールバック
-  if (typeof ALL_QUESTIONS === 'undefined') {
-    var ALL_QUESTIONS = {};
-    document.getElementById('root').innerHTML = '<div style="padding:40px;text-align:center;color:#dc2626;"><h2>データ読み込みエラー</h2><p>問題データを読み込めませんでした。</p></div>';
-  }
+  // === 問題データを外部JSONから読み込み ===
+  let ALL_QUESTIONS = {};
+
+  // API_URL を設定することでサーバーからデータを取得可能
+  // ローカルファイルの場合は './questions.json'
+  const DATA_URL = './questions.json';
+
+  fetch(DATA_URL)
+    .then(res => res.json())
+    .then(data => {
+      ALL_QUESTIONS = data;
+      // データ読み込み完了後にReactアプリを起動
+      document.dispatchEvent(new Event('data-loaded'));
+    })
+    .catch(err => {
+      console.error('問題データの読み込みに失敗しました:', err);
+      document.getElementById('root').innerHTML = '<div style="padding:40px;text-align:center;color:#dc2626;"><h2>データ読み込みエラー</h2><p>問題データを読み込めませんでした。<br>questions.json が同じフォルダにあるか確認してください。</p></div>';
+    });
   </script>
   <script type="text/babel">
     const { useState, useEffect, useCallback, useMemo } = React;
 
-    // ============ 定数定義 ============
     const SUBJECTS = {
       keizai: { name: "経済学・経済政策", icon: "📈", color: "#2563eb" },
       zaimu: { name: "財務・会計", icon: "💰", color: "#059669" },
@@ -190,122 +272,54 @@
       chusho: { name: "中小企業経営・政策", icon: "🏪", color: "#be185d" },
     };
 
-    // 復習ステップ定義: step => 日数
-    const REVIEW_STEPS = { 1: 1, 2: 7, 3: 16, 4: 35 };
-    const MASTERED_STEP = 5;
-    const STEP_LABELS = { 1: "1日後", 2: "7日後", 3: "16日後", 4: "35日後", 5: "定着" };
+    const DEFAULT_REVIEW_INTERVALS = [1, 7, 16, 35];
+    const FREE_LIMIT = 10;
+    const SUBJECT_PRICE = 500;
+    const ALL_SUBJECTS_PRICE = 2000;
 
     const formatDate = (date) => {
       const d = new Date(date);
       return d.getFullYear() + "/" + String(d.getMonth()+1).padStart(2,"0") + "/" + String(d.getDate()).padStart(2,"0") + " " + String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
     };
-    const formatShortDate = (date) => {
-      const d = new Date(date);
-      return (d.getMonth()+1) + "/" + d.getDate();
-    };
     const addDays = (date, days) => { const r = new Date(date); r.setDate(r.getDate()+days); return r; };
-    const startOfDay = (date) => { const d = new Date(date); d.setHours(0,0,0,0); return d; };
-    const todayStart = () => startOfDay(new Date());
 
     // LocalStorage helpers
     const loadState = (key, def) => { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : def; } catch(e) { return def; } };
     const saveState = (key, val) => { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {} };
 
-    // ============ マイグレーション ============
-    function migrateReviewLog() {
-      const oldLog = loadState("shindan_review", []);
-      const newLog = loadState("shindan_progress", null);
-      if (newLog !== null) return newLog; // 既に移行済み
-      if (oldLog.length === 0) return [];
-
-      // 旧形式を新形式に移行
-      const migrated = oldLog.map(entry => ({
-        subject: entry.subject,
-        questionId: entry.questionId,
-        step: 1,
-        nextReviewAt: addDays(new Date(), 1).toISOString(),
-        difficulty: null,
-        masteredAt: null,
-        updatedAt: entry.studiedAt || new Date().toISOString()
-      }));
-      saveState("shindan_progress", migrated);
-      return migrated;
+    // ============ 定着判定ヘルパー ============
+    function getMasteryStatus(reviewLog, subject, questionId) {
+      const entry = reviewLog.find(r => r.subject === subject && r.questionId === questionId);
+      if (!entry) return { streak: 0, mastered: false };
+      return { streak: entry.streak || 0, mastered: !!entry.masteredAt };
     }
 
-    // ============ コアロジック: 回答処理 ============
-    function processAnswer(entry, isCorrect, selfRating) {
-      const now = new Date().toISOString();
-
-      if (!isCorrect) {
-        // 不正解: 1段階戻す（最低ステップ1）
-        const newStep = Math.max(1, entry.step - 1);
-        return {
-          ...entry,
-          step: newStep,
-          nextReviewAt: addDays(new Date(), REVIEW_STEPS[newStep]).toISOString(),
-          updatedAt: now
-        };
-      }
-
-      // 正解時
-      let stepAdvance = 1;
-      if (selfRating === 'easy') stepAdvance = 2;
-
-      const newStep = Math.min(MASTERED_STEP, entry.step + stepAdvance);
-      const isMastered = newStep >= MASTERED_STEP;
-
-      // difficulty フラグの処理
-      // "hard" は粘着性: 一度付いたら "easy" でのみ解除
-      let newDifficulty = entry.difficulty;
-      if (selfRating === 'hard') {
-        newDifficulty = 'hard';
-      } else if (selfRating === 'easy') {
-        newDifficulty = null;
-      }
-      // "normal" の場合は既存の difficulty を維持
-
-      return {
-        ...entry,
-        step: newStep,
-        nextReviewAt: isMastered ? null : addDays(new Date(), REVIEW_STEPS[newStep]).toISOString(),
-        difficulty: newDifficulty,
-        masteredAt: isMastered ? now : entry.masteredAt,
-        updatedAt: now
-      };
+    function getMasteredCount(reviewLog, subject) {
+      return reviewLog.filter(r => r.subject === subject && r.masteredAt).length;
     }
 
-    // ============ ステップ進捗コンポーネント ============
-    function StepProgress({ currentStep }) {
-      const steps = [1, 2, 3, 4, 5];
-      return (
-        <div className="step-progress">
-          {steps.map((s, i) => {
-            let cls = "step-dot";
-            if (currentStep >= MASTERED_STEP && s === 5) cls += " mastered";
-            else if (s < currentStep) cls += " done";
-            else if (s === currentStep) cls += " active";
-            return (
-              <React.Fragment key={s}>
-                {i > 0 && <div className={"step-line" + (s <= currentStep ? " done" : "")} />}
-                <div className={cls}>
-                  {s === 5 ? "★" : s}
-                </div>
-              </React.Fragment>
-            );
-          })}
-        </div>
-      );
+    function getTotalMasteredCount(reviewLog) {
+      return reviewLog.filter(r => r.masteredAt).length;
     }
 
     // ============ メインApp ============
     function App() {
       const [page, setPage] = useState("home");
       const [selectedSubject, setSelectedSubject] = useState(null);
+      const [startQuestionIndex, setStartQuestionIndex] = useState(null);
+      const [reviewQuizQuestions, setReviewQuizQuestions] = useState([]); // 復習クイズ用（フィルタ済み問題）
+      const [purchasedSubjects, setPurchasedSubjects] = useState(() => loadState("shindan_purchased", []));
       const [results, setResults] = useState(() => loadState("shindan_results", []));
-      const [progress, setProgress] = useState(() => migrateReviewLog());
+      const [reviewLog, setReviewLog] = useState(() => loadState("shindan_review", []));
+      const [reviewIntervals, setReviewIntervals] = useState(() => loadState("shindan_intervals", DEFAULT_REVIEW_INTERVALS));
 
+      useEffect(() => { saveState("shindan_purchased", purchasedSubjects); }, [purchasedSubjects]);
       useEffect(() => { saveState("shindan_results", results); }, [results]);
-      useEffect(() => { saveState("shindan_progress", progress); }, [progress]);
+      useEffect(() => { saveState("shindan_review", reviewLog); }, [reviewLog]);
+      useEffect(() => { saveState("shindan_intervals", reviewIntervals); }, [reviewIntervals]);
+
+      const isAllPurchased = purchasedSubjects.includes("all");
+      const isSubjectPurchased = (key) => isAllPurchased || purchasedSubjects.includes(key);
 
       const totalQuestions = useMemo(() => {
         let t = 0;
@@ -313,75 +327,137 @@
         return t;
       }, []);
 
-      // 今日の復習対象を取得
       const getReviewItems = useCallback(() => {
-        const today = todayStart();
-        return progress.filter(p => {
-          if (p.step >= MASTERED_STEP) return false;
-          if (!p.nextReviewAt) return false;
-          return startOfDay(p.nextReviewAt) <= today;
-        }).map(p => {
-          const subjectQuestions = ALL_QUESTIONS[p.subject] || [];
-          const q = subjectQuestions.find(q => q.id === p.questionId);
-          if (!q) return null;
-          return { ...q, subject: p.subject, step: p.step, difficulty: p.difficulty, nextReviewAt: p.nextReviewAt, updatedAt: p.updatedAt };
-        }).filter(Boolean);
-      }, [progress]);
-
-      // 定着数を取得
-      const masteredCount = useMemo(() => progress.filter(p => p.step >= MASTERED_STEP).length, [progress]);
-
-      // 苦手問題数を取得
-      const hardCount = useMemo(() => progress.filter(p => p.difficulty === 'hard' && p.step < MASTERED_STEP).length, [progress]);
-
-      const handleResult = (subject, questionId, isCorrect, selfRating) => {
-        // 結果ログに追加
-        setResults(prev => [...prev, { subject, questionId, correct: isCorrect, date: new Date().toISOString() }]);
-
-        // 進捗データを更新
-        setProgress(prev => {
-          const existing = prev.find(p => p.subject === subject && p.questionId === questionId);
-          if (existing) {
-            const updated = processAnswer(existing, isCorrect, selfRating);
-            return prev.map(p =>
-              (p.subject === subject && p.questionId === questionId) ? updated : p
-            );
-          } else {
-            // 初めて解く問題: ステップ1から開始
-            const newEntry = {
-              subject,
-              questionId,
-              step: 0,
-              nextReviewAt: null,
-              difficulty: null,
-              masteredAt: null,
-              updatedAt: new Date().toISOString()
-            };
-            const processed = processAnswer(newEntry, isCorrect, selfRating);
-            return [...prev, processed];
+        const now = new Date();
+        const items = [];
+        reviewLog.forEach(log => {
+          if (log.masteredAt) return;
+          const streak = log.streak || 0;
+          const nextIntervalIdx = Math.min(streak, reviewIntervals.length - 1);
+          const days = reviewIntervals[nextIntervalIdx];
+          const reviewDate = addDays(log.studiedAt, days);
+          const diff = (reviewDate - now) / (1000*60*60*24);
+          if (diff <= 1 && diff >= -7) {
+            const subjectQuestions = ALL_QUESTIONS[log.subject] || [];
+            const q = subjectQuestions.find(q => q.id === log.questionId);
+            if (q && !items.find(i => i.subject === log.subject && i.id === q.id)) {
+              items.push({...q, subject: log.subject, days, reviewDate, studiedAt: log.studiedAt, streak, isReview: true});
+            }
           }
+        });
+        return items;
+      }, [reviewLog, reviewIntervals]);
+
+      const handleResult = (subject, questionId, correct, isReviewMode) => {
+        setResults(prev => [...prev, {subject, questionId, correct, date: new Date().toISOString()}]);
+        setReviewLog(prev => {
+          const existing = prev.find(r => r.subject === subject && r.questionId === questionId);
+          if (existing) {
+            return prev.map(r => {
+              if (r.subject === subject && r.questionId === questionId) {
+                if (r.masteredAt) return r;
+                if (isReviewMode) {
+                  if (correct) {
+                    const newStreak = (r.streak || 0) + 1;
+                    if (newStreak >= reviewIntervals.length) {
+                      return {...r, studiedAt: new Date().toISOString(), streak: newStreak, masteredAt: new Date().toISOString()};
+                    }
+                    return {...r, studiedAt: new Date().toISOString(), streak: newStreak};
+                  } else {
+                    return {...r, studiedAt: new Date().toISOString(), streak: 0};
+                  }
+                } else {
+                  if (r.streak === undefined || r.streak === null) {
+                    return {...r, studiedAt: new Date().toISOString(), streak: 0};
+                  }
+                  return {...r, studiedAt: new Date().toISOString()};
+                }
+              }
+              return r;
+            });
+          }
+          return [...prev, {subject, questionId, studiedAt: new Date().toISOString(), streak: 0}];
         });
       };
 
-      const selectSubject = (key) => { setSelectedSubject(key); setPage("quiz"); };
-      const goHome = () => { setSelectedSubject(null); setPage("home"); };
+      const purchaseSubject = (key) => {
+        setPurchasedSubjects(prev => prev.includes(key) ? prev : [...prev, key]);
+      };
+
+      const purchaseAll = () => {
+        setPurchasedSubjects(prev => prev.includes("all") ? prev : [...prev, "all"]);
+      };
+
+      const selectSubject = (key) => {
+        setSelectedSubject(key);
+        setStartQuestionIndex(null);
+        setPage("quiz");
+      };
+
+      const goHome = () => {
+        setSelectedSubject(null);
+        setStartQuestionIndex(null);
+        setPage("home");
+      };
+
+      const goToQuestion = (subjectKey, questionIndex) => {
+        setSelectedSubject(subjectKey);
+        setStartQuestionIndex(questionIndex);
+        setPage("quiz");
+      };
+
+      // ============ データ管理 ============
+      const resetAllData = () => {
+        setResults([]);
+        setReviewLog([]);
+        setReviewIntervals([...DEFAULT_REVIEW_INTERVALS]);
+      };
+
+      const resetSubjectData = (subjectKey) => {
+        setResults(prev => prev.filter(r => r.subject !== subjectKey));
+        setReviewLog(prev => prev.filter(r => r.subject !== subjectKey));
+      };
+
+      const exportData = () => {
+        const data = {
+          version: "1.0",
+          exportedAt: new Date().toISOString(),
+          shindan_results: results,
+          shindan_review: reviewLog,
+          shindan_intervals: reviewIntervals,
+          shindan_purchased: purchasedSubjects,
+        };
+        return JSON.stringify(data, null, 2);
+      };
+
+      const importData = (jsonStr) => {
+        try {
+          const data = JSON.parse(jsonStr);
+          if (!data.shindan_results || !data.shindan_review) {
+            return { success: false, message: "データ形式が正しくありません" };
+          }
+          setResults(data.shindan_results);
+          setReviewLog(data.shindan_review);
+          if (data.shindan_intervals) setReviewIntervals(data.shindan_intervals);
+          if (data.shindan_purchased) setPurchasedSubjects(data.shindan_purchased);
+          return { success: true, message: "データを復元しました（成績: " + data.shindan_results.length + "件、復習: " + data.shindan_review.length + "件）" };
+        } catch (e) {
+          return { success: false, message: "JSONの解析に失敗しました: " + e.message };
+        }
+      };
 
       return (
         <div>
           <header className="header">
             <div className="header-inner">
-              <h1 className="header-title" onClick={goHome}>📚 中小企業診断士 一問一答</h1>
+              <h1 className="header-title" onClick={goHome}>📚 中小企業診断士 一問一答 v2</h1>
+              <div>{isAllPurchased ? <span className="badge-premium">全科目</span> : <span className="badge-free">Free</span>}</div>
             </div>
           </header>
 
           <nav className="nav">
-            {[
-              { key: "home", label: "ホーム", icon: "🏠" },
-              { key: "stats", label: "成績", icon: "📊" },
-              { key: "review", label: "復習", icon: "🔔" },
-              { key: "guide", label: "使い方", icon: "❓" }
-            ].map(item => (
-              <button key={item.key} onClick={() => { setPage(item.key); if (item.key === "home") setSelectedSubject(null); }} className={"nav-btn" + (page === item.key ? " active" : "")}>
+            {[{key:"home",label:"ホーム",icon:"🏠"},{key:"list",label:"一覧",icon:"📋"},{key:"stats",label:"成績",icon:"📊"},{key:"review",label:"復習",icon:"🔔"},{key:"subscription",label:"プラン",icon:"⭐"}].map(item => (
+              <button key={item.key} onClick={() => { setPage(item.key); if(item.key==="home") { setSelectedSubject(null); setStartQuestionIndex(null); } }} className={"nav-btn" + (page===item.key || ((page==="settings" || page==="reviewQuiz") && item.key==="review") ?" active":"")}>
                 <span className="nav-icon">{item.icon}</span>
                 <span className="nav-label">{item.label}</span>
               </button>
@@ -389,32 +465,85 @@
           </nav>
 
           <main className="main">
-            {page === "home" && <HomePage onSelect={selectSubject} totalQ={totalQuestions} totalA={results.length} reviewCount={getReviewItems().length} masteredCount={masteredCount} hardCount={hardCount} results={results} progress={progress} />}
-            {page === "quiz" && selectedSubject && <QuizPage subjectKey={selectedSubject} questions={ALL_QUESTIONS[selectedSubject] || []} progress={progress} onResult={handleResult} onBack={goHome} />}
-            {page === "quiz" && !selectedSubject && <SubjectSelectPage onSelect={selectSubject} results={results} progress={progress} />}
-            {page === "stats" && <StatsPage results={results} progress={progress} />}
-            {page === "review" && <ReviewPage progress={progress} getReviewItems={getReviewItems} onStartReview={(subj) => { setSelectedSubject(subj); setPage("quiz"); }} />}
-            {page === "guide" && <GuidePage />}
+            {page==="home" && <HomePage onSelect={selectSubject} onGoToReview={() => setPage("review")} totalQ={totalQuestions} totalA={results.length} reviewCount={getReviewItems().length} results={results} reviewLog={reviewLog} isSubjectPurchased={isSubjectPurchased} />}
+            {page==="quiz" && selectedSubject && <QuizPage subjectKey={selectedSubject} questions={ALL_QUESTIONS[selectedSubject] || []} onResult={handleResult} onBack={goHome} results={results} startIndex={startQuestionIndex} reviewLog={reviewLog} isSubjectPurchased={isSubjectPurchased} onGoPlan={() => setPage("subscription")} reviewIntervals={reviewIntervals} />}
+            {page==="quiz" && !selectedSubject && <SubjectSelectPage onSelect={selectSubject} results={results} />}
+            {page==="list" && <QuestionListPage results={results} onGoToQuestion={goToQuestion} reviewLog={reviewLog} />}
+            {page==="stats" && <StatsPage results={results} reviewLog={reviewLog} reviewIntervals={reviewIntervals} />}
+            {page==="review" && <ReviewPage reviewItems={getReviewItems()} onStartReview={(subjectKey) => {
+              // 復習対象の問題だけをフィルタして復習クイズを開始
+              const allReview = getReviewItems();
+              const filtered = subjectKey === "__all__"
+                ? allReview
+                : allReview.filter(item => item.subject === subjectKey);
+              setReviewQuizQuestions(filtered);
+              setSelectedSubject(filtered.length > 0 ? filtered[0].subject : subjectKey);
+              setPage("reviewQuiz");
+            }} reviewLog={reviewLog} reviewIntervals={reviewIntervals} onGoSettings={() => setPage("settings")} />}
+            {page==="reviewQuiz" && <ReviewQuizPage
+              questions={reviewQuizQuestions}
+              onResult={handleResult}
+              onBack={() => setPage("review")}
+              results={results}
+              reviewLog={reviewLog}
+              reviewIntervals={reviewIntervals}
+            />}
+            {page==="settings" && <SettingsPage reviewIntervals={reviewIntervals} onUpdateIntervals={setReviewIntervals} onBack={() => setPage("review")} onResetAll={resetAllData} onResetSubject={resetSubjectData} onExport={exportData} onImport={importData} results={results} reviewLog={reviewLog} />}
+            {page==="subscription" && <SubscriptionPage purchasedSubjects={purchasedSubjects} onPurchaseSubject={purchaseSubject} onPurchaseAll={purchaseAll} isAllPurchased={isAllPurchased} />}
           </main>
         </div>
       );
     }
 
     // ============ ホーム ============
-    function HomePage({ onSelect, totalQ, totalA, reviewCount, masteredCount, hardCount, results, progress }) {
+    function HomePage({onSelect, onGoToReview, totalQ, totalA, reviewCount, results, reviewLog, isSubjectPurchased}) {
+      const masteredTotal = getTotalMasteredCount(reviewLog);
+
+      // 今日の学習進捗を計算
+      const today = new Date();
+      const todayStr = today.getFullYear() + "/" + String(today.getMonth()+1).padStart(2,"0") + "/" + String(today.getDate()).padStart(2,"0");
+      const todayResults = results.filter(r => {
+        const d = new Date(r.date);
+        const dStr = d.getFullYear() + "/" + String(d.getMonth()+1).padStart(2,"0") + "/" + String(d.getDate()).padStart(2,"0");
+        return dStr === todayStr;
+      });
+      const todaySolved = todayResults.length;
+      const todayCorrect = todayResults.filter(r => r.correct).length;
+      const answeredIds = new Set(results.map(r => r.subject + "_" + r.questionId));
+      const remaining = totalQ - answeredIds.size;
+
       return (
         <div>
           <div className="hero">
             <div className="hero-emoji">📖</div>
             <h2 className="hero-title">中小企業診断士試験対策</h2>
             <p className="hero-sub">1次試験 全7科目 一問一答</p>
-            <p className="hero-count">全{totalQ}問 ｜ 回答{totalA}問 ｜ 復習{reviewCount}問 ｜ 定着{masteredCount}問</p>
+            <p className="hero-count">収録 {totalQ}問 ｜ 回答 {totalA}問 ｜ 定着 {masteredTotal}問 ｜ 要復習 {reviewCount}問</p>
+          </div>
+
+          {/* 今日の学習進捗 */}
+          <div style={{display:"flex",gap:10,marginBottom:16}}>
+            <div className="stat-card" style={{flex:1}}>
+              <div className="stat-num" style={{color:"#2563eb"}}>{todaySolved}</div>
+              <div className="stat-label">今日解いた問題</div>
+            </div>
+            <div className="stat-card" style={{flex:1}}>
+              <div className="stat-num" style={{color:"#10b981"}}>{todaySolved > 0 ? Math.round((todayCorrect/todaySolved)*100) : 0}%</div>
+              <div className="stat-label">今日の正答率</div>
+            </div>
+            <div className="stat-card" style={{flex:1}}>
+              <div className="stat-num" style={{color:"#f59e0b"}}>{remaining}</div>
+              <div className="stat-label">未回答の問題</div>
+            </div>
           </div>
 
           {reviewCount > 0 && (
-            <div style={{background:"linear-gradient(135deg, #f59e0b, #d97706)", borderRadius:12, padding:"14px 18px", marginBottom:16, cursor:"pointer"}} onClick={() => {}}>
-              <div style={{color:"#fff", fontWeight:700, fontSize:15}}>🔔 今日の復習: {reviewCount}問</div>
-              <div style={{color:"rgba(255,255,255,0.8)", fontSize:12, marginTop:4}}>復習タブから確認しましょう</div>
+            <div style={{background:"linear-gradient(135deg, #f59e0b, #d97706)", borderRadius:12, padding:"14px 18px", marginBottom:16, cursor:"pointer", display:"flex", justifyContent:"space-between", alignItems:"center"}} onClick={onGoToReview}>
+              <div>
+                <div style={{color:"#fff", fontWeight:700, fontSize:15}}>🔔 今日の復習: {reviewCount}問</div>
+                <div style={{color:"rgba(255,255,255,0.8)", fontSize:12, marginTop:4}}>タップして復習を始めましょう</div>
+              </div>
+              <div style={{color:"#fff", fontSize:20, fontWeight:700}}>›</div>
             </div>
           )}
 
@@ -422,15 +551,16 @@
           <div className="subject-grid">
             {Object.entries(SUBJECTS).map(([key, subj]) => {
               const qs = ALL_QUESTIONS[key] || [];
-              const subProgress = progress.filter(p => p.subject === key);
-              const mastered = subProgress.filter(p => p.step >= MASTERED_STEP).length;
-              const answered = new Set(subProgress.map(p => p.questionId)).size;
+              const subResults = results.filter(r => r.subject === key);
+              const answered = new Set(subResults.map(r => r.questionId)).size;
+              const mastered = getMasteredCount(reviewLog, key);
+              const purchased = isSubjectPurchased(key);
               return (
                 <div key={key} className="subject-card" style={{borderLeftColor: subj.color}} onClick={() => onSelect(key)}>
                   <div className="subject-icon">{subj.icon}</div>
                   <div className="subject-info">
-                    <div className="subject-name">{subj.name}</div>
-                    <div className="subject-meta">{qs.length}問 ・ {answered}問学習済 ・ {mastered}問定着</div>
+                    <div className="subject-name">{subj.name}{!purchased && <span style={{fontSize:11,color:"#f59e0b",marginLeft:6}}>無料{FREE_LIMIT}問</span>}</div>
+                    <div className="subject-meta">{qs.length}問収録 ・ {answered}問回答済 ・ 👑{mastered}定着</div>
                   </div>
                   <div className="subject-arrow">›</div>
                 </div>
@@ -439,29 +569,28 @@
           </div>
 
           <div className="info-card">
-            <h3 className="info-title">分散学習で効率的に</h3>
-            <p className="info-text">問題を解くと1日後→7日後→16日後→35日後に復習が自動スケジュールされます。すべてのステップを正解すると「定着」となり、復習リストから卒業します。</p>
+            <h3 className="info-title">学習のポイント</h3>
+            <p className="info-text">復習スケジュールで効率的に記憶を定着させましょう。復習リマインドで連続正解すると「定着👑」となります。復習間隔は設定で自由にカスタマイズできます。</p>
           </div>
         </div>
       );
     }
 
     // ============ 科目選択 ============
-    function SubjectSelectPage({ onSelect, results, progress }) {
+    function SubjectSelectPage({onSelect, results}) {
       return (
         <div>
-          <h2 className="section-title">科目を選択</h2>
+          <h2 className="section-title">✏️ 科目を選択</h2>
           <div className="subject-grid">
             {Object.entries(SUBJECTS).map(([key, subj]) => {
               const qs = ALL_QUESTIONS[key] || [];
-              const subProgress = progress.filter(p => p.subject === key);
-              const mastered = subProgress.filter(p => p.step >= MASTERED_STEP).length;
+              const subResults = results.filter(r => r.subject === key);
               return (
                 <div key={key} className="subject-card" style={{borderLeftColor: subj.color}} onClick={() => onSelect(key)}>
                   <div className="subject-icon">{subj.icon}</div>
                   <div className="subject-info">
                     <div className="subject-name">{subj.name}</div>
-                    <div className="subject-meta">{qs.length}問 ・ 定着{mastered}問</div>
+                    <div className="subject-meta">{qs.length}問 ・ 回答{subResults.length}回</div>
                   </div>
                   <div className="subject-arrow">›</div>
                 </div>
@@ -472,31 +601,140 @@
       );
     }
 
+    // ============ 問題一覧（王冠マーク付き） ============
+    function QuestionListPage({results, onGoToQuestion, reviewLog}) {
+      const subjectKeys = Object.keys(SUBJECTS);
+      const [selectedSubject, setSelectedSubject] = useState(subjectKeys[0]);
+
+      const questions = ALL_QUESTIONS[selectedSubject] || [];
+      const subResults = results.filter(r => r.subject === selectedSubject);
+
+      const getQuestionStatus = (qId) => {
+        const mastery = getMasteryStatus(reviewLog, selectedSubject, qId);
+        if (mastery.mastered) return "mastered";
+        const qResults = subResults.filter(r => r.questionId === qId);
+        if (qResults.length === 0) return "unanswered";
+        return qResults[qResults.length - 1].correct ? "correct" : "incorrect";
+      };
+
+      const answeredCount = new Set(subResults.map(r => r.questionId)).size;
+      const masteredCount = getMasteredCount(reviewLog, selectedSubject);
+
+      const groupedByCategory = {};
+      questions.forEach((q, i) => {
+        if (!groupedByCategory[q.category]) groupedByCategory[q.category] = [];
+        groupedByCategory[q.category].push({...q, originalIndex: i});
+      });
+
+      return (
+        <div>
+          <h2 className="section-title">📋 問題一覧</h2>
+          <select className="list-subject-select" value={selectedSubject} onChange={e => setSelectedSubject(e.target.value)}>
+            {subjectKeys.map(key => (
+              <option key={key} value={key}>{SUBJECTS[key].icon} {SUBJECTS[key].name}</option>
+            ))}
+          </select>
+          <div className="list-summary">回答済み {answeredCount} / 全{questions.length}問 ・ 👑定着 {masteredCount}問</div>
+
+          {Object.entries(groupedByCategory).map(([cat, qs]) => (
+            <div key={cat}>
+              <div className="list-category-header">{cat}</div>
+              {qs.map((q) => {
+                const status = getQuestionStatus(q.id);
+                const statusIcon = status === "mastered" ? "👑" : status === "correct" ? "✅" : status === "incorrect" ? "❌" : "⬜";
+                const mastery = getMasteryStatus(reviewLog, selectedSubject, q.id);
+                return (
+                  <div key={q.id} className="question-list-item" onClick={() => onGoToQuestion(selectedSubject, q.originalIndex)}>
+                    <span className="ql-num">Q{q.originalIndex + 1}</span>
+                    <span className="ql-text">{q.question.length > 35 ? q.question.substring(0, 35) + "..." : q.question}</span>
+                    <span className="ql-status">{statusIcon}</span>
+                    {!mastery.mastered && mastery.streak > 0 && (
+                      <span className="mastery-progress" title={"連続正答 " + mastery.streak + "/4"}>
+                        {[0,1,2,3].map(i => <span key={i} className={"mastery-dot" + (i < mastery.streak ? " filled" : "")} />)}
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+      );
+    }
+
     // ============ クイズ ============
-    function QuizPage({ subjectKey, questions, progress, onResult, onBack }) {
+    function QuizPage({subjectKey, questions, onResult, onBack, results, startIndex, reviewLog, isSubjectPurchased, onGoPlan, reviewIntervals}) {
       const [idx, setIdx] = useState(0);
       const [flipped, setFlipped] = useState(false);
       const [userAnswer, setUserAnswer] = useState("");
       const [selectedChoice, setSelectedChoice] = useState(null);
-      const [judged, setJudged] = useState(null); // "correct" | "incorrect" | null
-      const [selfRating, setSelfRating] = useState(null); // "easy" | "normal" | "hard" | null
-      const [submitted, setSubmitted] = useState(false); // 結果送信済みか
-      const [shuffled, setShuffled] = useState([]);
+      const [judged, setJudged] = useState(null);
+      const [orderedQuestions, setOrderedQuestions] = useState([]);
+      const [history, setHistory] = useState([]);
+      const [isReviewMode, setIsReviewMode] = useState(false);
+      const [completed, setCompleted] = useState(false);
+
+      const purchased = isSubjectPurchased(subjectKey);
 
       useEffect(() => {
-        setShuffled([...questions].sort(() => Math.random() - 0.5));
-        setIdx(0); setFlipped(false); setUserAnswer(""); setSelectedChoice(null); setJudged(null); setSelfRating(null); setSubmitted(false);
-      }, [questions]);
+        if (startIndex !== null && startIndex !== undefined) {
+          setOrderedQuestions([...questions]);
+          setIdx(startIndex);
+          setIsReviewMode(false);
+        } else {
+          let availableQs = purchased ? [...questions] : [...questions].slice(0, FREE_LIMIT);
+          setOrderedQuestions(availableQs.sort(() => Math.random() - 0.5));
+          setIdx(0);
+          setIsReviewMode(false);
+        }
+        setFlipped(false); setUserAnswer(""); setSelectedChoice(null); setJudged(null); setHistory([]); setCompleted(false);
+      }, [questions, startIndex, purchased]);
 
-      const current = shuffled[idx];
-      if (!current) return <div style={{textAlign:"center", padding:40, color:"#6b7280"}}>読み込み中...</div>;
+      // 全問完了画面
+      if (completed) {
+        const subj = SUBJECTS[subjectKey];
+        const sessionResults = results.filter(r => r.subject === subjectKey);
+        const sessionCorrect = sessionResults.filter(r => r.correct).length;
+        return (
+          <div>
+            <div className="empty-state">
+              <div className="empty-emoji">🎉</div>
+              <p className="empty-title">お疲れさまでした！</p>
+              <p className="empty-text">{subj.icon} {subj.name}の全{orderedQuestions.length}問を解き終わりました</p>
+              <div style={{display:"flex",gap:10,justifyContent:"center",marginBottom:20}}>
+                <button className="btn-action" style={{maxWidth:200}} onClick={onBack}>ホームに戻る</button>
+                <button className="btn-secondary" style={{maxWidth:200}} onClick={() => {
+                  let availableQs = purchased ? [...questions] : [...questions].slice(0, FREE_LIMIT);
+                  setOrderedQuestions(availableQs.sort(() => Math.random() - 0.5));
+                  setIdx(0); setFlipped(false); setUserAnswer(""); setSelectedChoice(null); setJudged(null); setHistory([]); setCompleted(false);
+                }}>もう一度挑戦</button>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      const current = orderedQuestions[idx];
+      if (!current) return <div style={{textAlign:"center",padding:40,color:"#6b7280"}}>読み込み中...</div>;
       const isChoice = current.choices !== null && current.choices !== undefined;
       const labels = ["ア","イ","ウ","エ"];
       const subj = SUBJECTS[subjectKey];
 
-      // この問題の進捗状態
-      const currentProgress = progress.find(p => p.subject === subjectKey && p.questionId === current.id);
-      const currentStep = currentProgress ? currentProgress.step : 0;
+      const isLimited = !purchased && startIndex !== null && startIndex >= FREE_LIMIT;
+
+      if (isLimited) {
+        return (
+          <div>
+            <button className="btn-back" onClick={onBack}>← 科目一覧に戻る</button>
+            <div className="lock-card">
+              <div className="lock-icon">🔒</div>
+              <h2 className="lock-title">有料問題です</h2>
+              <p className="lock-text">この問題は有料プランの問題です。{SUBJECTS[subjectKey].name}の全問題を利用するには科目購入（¥{SUBJECT_PRICE}）が必要です。</p>
+              <button className="btn-premium" onClick={onGoPlan}>プランを見る</button>
+            </div>
+          </div>
+        );
+      }
 
       const handleFlip = () => {
         if (!flipped) {
@@ -506,42 +744,439 @@
         }
       };
 
-      const handleSubmitAndNext = () => {
-        if (!submitted && judged) {
-          const isCorrect = judged === "correct";
-          // 不正解時は selfRating 不要、デフォルト null
-          const rating = isCorrect ? (selfRating || "normal") : null;
-          onResult(subjectKey, current.id, isCorrect, rating);
-          setSubmitted(true);
+      const handleNext = () => {
+        if (judged) onResult(subjectKey, current.id, judged === "correct", isReviewMode);
+        setHistory(prev => [...prev, idx]);
+        setFlipped(false); setUserAnswer(""); setSelectedChoice(null); setJudged(null);
+        if (idx + 1 >= orderedQuestions.length) {
+          setCompleted(true);
+        } else {
+          setIdx(prev => prev + 1);
         }
-        // 次の問題へ
-        setFlipped(false); setUserAnswer(""); setSelectedChoice(null); setJudged(null); setSelfRating(null); setSubmitted(false);
-        setIdx(prev => (prev + 1) % shuffled.length);
       };
 
-      const progressPct = ((idx + 1) / shuffled.length) * 100;
+      const handlePrev = () => {
+        if (history.length === 0) return;
+        const prevIdx = history[history.length - 1];
+        setHistory(prev => prev.slice(0, -1));
+        setFlipped(false); setUserAnswer(""); setSelectedChoice(null); setJudged(null);
+        setIdx(prevIdx);
+      };
 
-      // 正解で自己評価が未選択なら「次へ」を押せない
-      const canProceed = judged === "incorrect" || (judged === "correct" && selfRating !== null);
+      const progress = ((idx + 1) / orderedQuestions.length) * 100;
+      const questionHistory = (results || []).filter(r => r.subject === subjectKey && r.questionId === current.id).reverse().slice(0, 10);
+      const mastery = getMasteryStatus(reviewLog, subjectKey, current.id);
 
       return (
         <div>
-          <button className="btn-back" onClick={onBack}>← 科目一覧に戻る</button>
-          <div style={{display:"flex", alignItems:"center", gap:8, marginBottom:8}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+            <button className="btn-back" style={{marginBottom:0}} onClick={() => { if(confirm("クイズを中断してホームに戻りますか？")) onBack(); }}>← 戻る</button>
+            <span style={{fontSize:13,color:"#9ca3af",fontWeight:600}}>{idx+1} / {orderedQuestions.length}問</span>
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
             <span style={{fontSize:24}}>{subj.icon}</span>
-            <span style={{fontSize:16, fontWeight:700, color:subj.color}}>{subj.name}</span>
+            <span style={{fontSize:16,fontWeight:700,color:subj.color}}>{subj.name}</span>
+            {mastery.mastered && <span style={{fontSize:16}} title="定着済み">👑</span>}
+            {!mastery.mastered && mastery.streak > 0 && (
+              <span className="mastery-progress" title={"連続正答 " + mastery.streak + "/" + reviewIntervals.length}>
+                {reviewIntervals.map((_, i) => <span key={i} className={"mastery-dot" + (i < mastery.streak ? " filled" : "")} />)}
+              </span>
+            )}
+          </div>
+          <div className="progress-wrap">
+            <div className="progress-bar"><div className="progress-fill" style={{width: progress+"%", background: subj.color}} /></div>
+            <span className="progress-text">{idx+1} / {orderedQuestions.length}</span>
+          </div>
+          <div className="cat-badge">{current.category}</div>
+
+          <div className="card">
+            {!flipped ? (
+              <div>
+                <div className="card-label">Q.</div>
+                <p className="q-text">{current.question}</p>
+                {isChoice ? (
+                  <div className="choices">
+                    {current.choices.map((c,i) => (
+                      <button key={i} onClick={() => setSelectedChoice(i)} className={"choice-btn" + (selectedChoice===i?" selected":"")}>
+                        <span className="choice-num">{labels[i]}</span><span>{c}</span>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <textarea className="answer-input" placeholder="回答を入力してください..." value={userAnswer} onChange={e => setUserAnswer(e.target.value)} rows={3} />
+                )}
+                <button className="btn-action" onClick={handleFlip} disabled={isChoice && selectedChoice===null} style={{opacity: isChoice && selectedChoice===null ? 0.5 : 1}}>
+                  解答を確認する 🔄
+                </button>
+                {history.length > 0 && (
+                  <div style={{marginTop:8}}>
+                    <button className="btn-prev" onClick={handlePrev}>← 前の問題</button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div>
+                {isChoice && <div className={"result-banner " + (judged==="correct"?"result-correct":"result-incorrect")}>{judged==="correct" ? "⭕ 正解！" : "❌ 不正解"}</div>}
+                <div className="card-label">A.</div>
+                <p className="answer-text">{isChoice ? labels[current.correctIndex] + ". " + current.choices[current.correctIndex] : current.correctAnswer}</p>
+                <div className="explain-box">
+                  <div className="explain-label">解説</div>
+                  <p className="explain-text">{current.explanation}</p>
+                </div>
+                {!isChoice && judged === null && (
+                  <div className="self-judge">
+                    <p className="self-judge-label">正解できましたか？</p>
+                    <div className="judge-btns">
+                      <button className="judge-btn judge-ok" onClick={() => setJudged("correct")}>⭕ 正解</button>
+                      <button className="judge-btn judge-ng" onClick={() => setJudged("incorrect")}>❌ 不正解</button>
+                    </div>
+                  </div>
+                )}
+                {(isChoice || judged !== null) && (
+                  <div className="quiz-nav-btns">
+                    {history.length > 0 && <button className="btn-prev" onClick={handlePrev}>← 前の問題</button>}
+                    <button className="btn-next" onClick={handleNext}>
+                      {idx + 1 >= orderedQuestions.length ? "結果を見る ✓" : "次の問題へ →"}
+                    </button>
+                  </div>
+                )}
+                {questionHistory.length > 0 && (
+                  <div className="history-timeline">
+                    <div className="history-timeline-title">📊 この問題の回答履歴 {mastery.mastered && "👑定着済み"}</div>
+                    {questionHistory.map((h, i) => (
+                      <div key={i} className="history-timeline-item">
+                        <span className="ht-icon">{h.correct ? "⭕" : "❌"}</span>
+                        <span className={"ht-label " + (h.correct ? "ht-correct" : "ht-incorrect")}>{h.correct ? "正解" : "不正解"}</span>
+                        <span className="ht-date">{formatDate(h.date)}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
-          {/* ステップ進捗 */}
-          <div style={{marginBottom:12}}>
-            <StepProgress currentStep={currentStep} />
-            <div style={{fontSize:11, color:"#9ca3af", textAlign:"center", marginTop:4}}>
-              {currentStep === 0 ? "初回学習" : currentStep >= MASTERED_STEP ? "定着済み" : "ステップ" + currentStep + " / 4"}
+          {!purchased && (
+            <div className="limit-banner">
+              <div className="limit-banner-text">無料プランでは各科目{FREE_LIMIT}問まで利用できます</div>
+              <button className="limit-banner-btn" onClick={onGoPlan}>全問題を解放する →</button>
             </div>
+          )}
+        </div>
+      );
+    }
+
+    // ============ 成績（定着度タブ付き） ============
+    function StatsPage({results, reviewLog, reviewIntervals}) {
+      const [tab, setTab] = useState("stats");
+
+      const total = results.length;
+      const correct = results.filter(r => r.correct).length;
+      const accuracy = total > 0 ? Math.round((correct/total)*100) : 0;
+      const totalMastered = getTotalMasteredCount(reviewLog);
+      const totalQuestions = Object.keys(ALL_QUESTIONS).reduce((sum, k) => sum + ALL_QUESTIONS[k].length, 0);
+      const requiredStreak = reviewIntervals.length;
+
+      return (
+        <div>
+          <h2 className="section-title">📊 学習成績</h2>
+          <div className="tab-bar">
+            <button className={"tab-btn" + (tab==="stats"?" active":"")} onClick={() => setTab("stats")}>成績</button>
+            <button className={"tab-btn" + (tab==="mastery"?" active":"")} onClick={() => setTab("mastery")}>👑 定着度</button>
+            <button className={"tab-btn" + (tab==="history"?" active":"")} onClick={() => setTab("history")}>履歴</button>
+          </div>
+
+          {tab === "stats" && (
+            <div>
+              <div className="stats-row">
+                <div className="stat-card"><div className="stat-num">{total}</div><div className="stat-label">総回答数</div></div>
+                <div className="stat-card"><div className="stat-num" style={{color:"#27ae60"}}>{correct}</div><div className="stat-label">正答数</div></div>
+                <div className="stat-card"><div className="stat-num" style={{color:"#2980b9"}}>{accuracy}%</div><div className="stat-label">正答率</div></div>
+                <div className="stat-card"><div className="stat-num" style={{color:"#b45309"}}>{totalMastered}</div><div className="stat-label">定着数</div></div>
+              </div>
+
+              <h3 className="sub-title">科目別正答率</h3>
+              {Object.entries(SUBJECTS).map(([key, subj]) => {
+                const subResults = results.filter(r => r.subject === key);
+                const subCorrect = subResults.filter(r => r.correct).length;
+                const pct = subResults.length > 0 ? Math.round((subCorrect/subResults.length)*100) : 0;
+                const qs = ALL_QUESTIONS[key] || [];
+                const mastered = getMasteredCount(reviewLog, key);
+                return (
+                  <div key={key} className="subject-stats-card">
+                    <div className="subject-stats-icon">{subj.icon}</div>
+                    <div className="subject-stats-info">
+                      <div className="subject-stats-name">{subj.name}</div>
+                      <div className="subject-stats-detail">{subResults.length}回答 / {qs.length}問中 ・ 正答{subCorrect} ・ 👑{mastered}</div>
+                      <div className="subject-stats-bar"><div className="subject-stats-fill" style={{width:pct+"%",background:subj.color}} /></div>
+                    </div>
+                    <div className="subject-stats-pct" style={{color: subResults.length > 0 ? subj.color : "#d1d5db"}}>{subResults.length > 0 ? pct+"%" : "—"}</div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {tab === "mastery" && (
+            <div>
+              <div className="mastery-summary">
+                <div className="mastery-summary-icon">👑</div>
+                <div className="mastery-summary-title">定着した問題</div>
+                <div className="mastery-summary-num">{totalMastered} <span style={{fontSize:16,fontWeight:600}}>/ {totalQuestions}問</span></div>
+                <div className="mastery-summary-sub">
+                  {totalQuestions > 0 ? Math.round((totalMastered/totalQuestions)*100) : 0}% 定着
+                </div>
+              </div>
+
+              <p style={{fontSize:13,color:"#6b7280",marginBottom:12,lineHeight:1.6}}>
+                復習リマインドで{requiredStreak}回連続正解すると「定着👑」となります。不正解の場合は最初からやり直しです。<br/>
+                現在の復習間隔: {reviewIntervals.map(d => d + "日後").join(" → ")} → 👑
+              </p>
+
+              {Object.entries(SUBJECTS).map(([key, subj]) => {
+                const qs = ALL_QUESTIONS[key] || [];
+                const mastered = getMasteredCount(reviewLog, key);
+                const pct = qs.length > 0 ? Math.round((mastered/qs.length)*100) : 0;
+                const streakCounts = new Array(requiredStreak + 1).fill(0);
+                qs.forEach(q => {
+                  const m = getMasteryStatus(reviewLog, key, q.id);
+                  if (m.mastered) streakCounts[requiredStreak]++;
+                  else {
+                    const hasEntry = reviewLog.find(r => r.subject === key && r.questionId === q.id);
+                    if (hasEntry) {
+                      const s = Math.min(m.streak, requiredStreak - 1);
+                      streakCounts[s]++;
+                    }
+                  }
+                });
+                return (
+                  <div key={key} className="mastery-subject-card">
+                    <div className="mastery-subject-header">
+                      <span style={{fontSize:20}}>{subj.icon}</span>
+                      <span className="mastery-subject-name">{subj.name}</span>
+                      <span className="mastery-subject-count">👑 {mastered}/{qs.length}</span>
+                    </div>
+                    <div className="mastery-bar">
+                      <div className="mastery-bar-fill" style={{width: pct+"%"}} />
+                    </div>
+                    <div className="mastery-bar-detail">
+                      <span>定着{pct}%</span>
+                      <span>
+                        {streakCounts.map((c, i) => {
+                          if (i === requiredStreak) return "👑" + c;
+                          if (i === 0) return "🔴" + c;
+                          return i + "回" + c;
+                        }).join(" → ")}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {tab === "history" && (
+            <div>
+              <h3 className="sub-title">最近の学習履歴</h3>
+              <div className="history-list">
+                {results.length === 0 ? <p style={{padding:16,color:"#9ca3af",textAlign:"center"}}>まだ学習記録がありません</p> :
+                  [...results].reverse().slice(0,30).map((r,i) => {
+                    const subj = SUBJECTS[r.subject];
+                    const qs = ALL_QUESTIONS[r.subject] || [];
+                    const q = qs.find(q => q.id === r.questionId);
+                    return (
+                      <div key={i} className="history-item">
+                        <span>{r.correct ? "⭕" : "❌"}</span>
+                        <span style={{fontSize:10,marginRight:-4}}>{subj ? subj.icon : ""}</span>
+                        <span className="history-q">{q ? (q.question.length>30 ? q.question.substring(0,30)+"..." : q.question) : "不明"}</span>
+                        <span className="history-date">{formatDate(r.date)}</span>
+                      </div>
+                    );
+                  })
+                }
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // ============ 復習 ============
+    function ReviewPage({reviewItems, onStartReview, reviewLog, reviewIntervals, onGoSettings}) {
+      return (
+        <div>
+          <h2 className="section-title">🔔 復習リマインダー</h2>
+          <div className="info-card" style={{marginBottom:16}}>
+            <p className="info-text">復習リマインドで{reviewIntervals.length}回連続正解すると「定着👑」です。不正解の場合は1回目からやり直しになります。</p>
+          </div>
+          <div className="review-schedule">
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+              <h4 className="review-schedule-title" style={{margin:0}}>定着までの道のり</h4>
+              <button onClick={onGoSettings} style={{background:"none",border:"1px solid #d1d5db",borderRadius:8,padding:"4px 12px",fontSize:12,fontWeight:600,color:"#6b7280",cursor:"pointer"}}>⚙️ 間隔設定</button>
+            </div>
+            <div className="timeline">
+              {reviewIntervals.map((d,i) => (
+                <div key={i} className="timeline-item">
+                  <div className="timeline-dot" />
+                  <span className="timeline-text">{d}日後</span>
+                  <span style={{fontSize:10,color:"#6b7280"}}>{i+1}回目</span>
+                </div>
+              ))}
+              <div className="timeline-item">
+                <div className="timeline-dot" style={{background:"#f59e0b"}} />
+                <span className="timeline-text">👑</span>
+                <span style={{fontSize:10,color:"#6b7280"}}>定着!</span>
+              </div>
+            </div>
+          </div>
+          {reviewItems.length === 0 ? (
+            <div className="empty-state">
+              <div className="empty-emoji">✨</div>
+              <p className="empty-title">現在、復習が必要な問題はありません</p>
+              <p className="empty-text">問題を解くと復習スケジュールが自動設定されます</p>
+            </div>
+          ) : (() => {
+            // 科目ごとにグループ化
+            const subjectGroups = {};
+            reviewItems.forEach(item => {
+              const key = item.subject;
+              if (!subjectGroups[key]) subjectGroups[key] = [];
+              subjectGroups[key].push(item);
+            });
+            return (
+              <div>
+                {/* 合計表示 */}
+                <div style={{background:"#fff", borderRadius:12, padding:20, textAlign:"center", marginBottom:16, boxShadow:"0 1px 3px rgba(0,0,0,0.08)"}}>
+                  <div style={{fontSize:14, color:"#6b7280", marginBottom:4}}>復習が必要な問題</div>
+                  <div style={{display:"flex", alignItems:"baseline", justifyContent:"center"}}>
+                    <span style={{fontSize:32, fontWeight:800, color:"#1e40af"}}>{reviewItems.length}</span>
+                    <span style={{fontSize:14, color:"#6b7280", marginLeft:4}}>問</span>
+                  </div>
+                </div>
+
+                {/* 科目ごとのボタンリスト */}
+                <div style={{display:"flex", flexDirection:"column", gap:10}}>
+                  {Object.entries(subjectGroups).map(([subjectKey, items]) => {
+                    const subj = SUBJECTS[subjectKey];
+                    if (!subj) return null;
+                    return (
+                      <button
+                        key={subjectKey}
+                        onClick={() => onStartReview(subjectKey)}
+                        style={{
+                          display:"flex", justifyContent:"space-between", alignItems:"center",
+                          backgroundColor:"#fff", borderRadius:12, padding:"16px 18px",
+                          border:"2px solid #e5e7eb", cursor:"pointer", textAlign:"left",
+                          width:"100%", boxShadow:"0 1px 3px rgba(0,0,0,0.05)"
+                        }}
+                      >
+                        <div style={{display:"flex", alignItems:"center", gap:14}}>
+                          <span style={{fontSize:28}}>{subj.icon}</span>
+                          <div>
+                            <div style={{fontSize:15, fontWeight:700, color:"#1e293b"}}>{subj.name}</div>
+                            <div style={{fontSize:12, color:"#6b7280", marginTop:2}}>{items.length}問の復習</div>
+                          </div>
+                        </div>
+                        <div style={{display:"flex", alignItems:"center", gap:8}}>
+                          <span style={{fontSize:22, fontWeight:800, color: subj.color}}>{items.length}</span>
+                          <span style={{fontSize:18, color:"#9ca3af"}}>›</span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* 全科目まとめて復習 */}
+                {Object.keys(subjectGroups).length > 1 && (
+                  <button
+                    className="btn-action"
+                    style={{marginTop:16}}
+                    onClick={() => onStartReview("__all__")}
+                  >
+                    全科目まとめて復習する ({reviewItems.length}問)
+                  </button>
+                )}
+              </div>
+            );
+          })()}
+        </div>
+      );
+    }
+
+    // ============ 復習専用クイズ ============
+    function ReviewQuizPage({questions, onResult, onBack, results, reviewLog, reviewIntervals}) {
+      const [idx, setIdx] = useState(0);
+      const [flipped, setFlipped] = useState(false);
+      const [userAnswer, setUserAnswer] = useState("");
+      const [selectedChoice, setSelectedChoice] = useState(null);
+      const [judged, setJudged] = useState(null);
+      const [shuffled, setShuffled] = useState([]);
+      const [completed, setCompleted] = useState(false);
+
+      useEffect(() => {
+        setShuffled([...questions].sort(() => Math.random() - 0.5));
+        setIdx(0); setFlipped(false); setUserAnswer(""); setSelectedChoice(null); setJudged(null); setCompleted(false);
+      }, [questions]);
+
+      // 全問完了
+      if (completed) {
+        return (
+          <div>
+            <div className="empty-state">
+              <div className="empty-emoji">🎉</div>
+              <p className="empty-title">復習完了！</p>
+              <p className="empty-text">このセッションの復習問題をすべて解きました</p>
+              <button className="btn-action" onClick={onBack}>復習一覧に戻る</button>
+            </div>
+          </div>
+        );
+      }
+
+      const current = shuffled[idx];
+      if (!current) return <div style={{textAlign:"center",padding:40,color:"#6b7280"}}>読み込み中...</div>;
+
+      const isChoice = current.choices !== null && current.choices !== undefined;
+      const labels = ["ア","イ","ウ","エ"];
+      const subj = SUBJECTS[current.subject];
+      const mastery = getMasteryStatus(reviewLog, current.subject, current.id);
+
+      const handleFlip = () => {
+        if (!flipped) {
+          const correct = isChoice ? selectedChoice === current.correctIndex : false;
+          setJudged(isChoice ? (correct ? "correct" : "incorrect") : null);
+          setFlipped(true);
+        }
+      };
+
+      const handleNext = () => {
+        if (judged) onResult(current.subject, current.id, judged === "correct", true);
+        setFlipped(false); setUserAnswer(""); setSelectedChoice(null); setJudged(null);
+        if (idx + 1 >= shuffled.length) {
+          setCompleted(true);
+        } else {
+          setIdx(prev => prev + 1);
+        }
+      };
+
+      const progress = ((idx + 1) / shuffled.length) * 100;
+
+      return (
+        <div>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+            <button className="btn-back" style={{marginBottom:0}} onClick={() => { if(confirm("復習を中断して一覧に戻りますか？")) onBack(); }}>← 戻る</button>
+            <span style={{fontSize:13,color:"#9ca3af",fontWeight:600}}>{idx+1} / {shuffled.length}問</span>
+          </div>
+
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+            <span style={{fontSize:20}}>🔔</span>
+            <span style={{fontSize:16,fontWeight:700,color:"#f59e0b"}}>復習モード</span>
+            {subj && (
+              <span style={{fontSize:13,color:"#6b7280"}}>- {subj.icon} {subj.name}</span>
+            )}
           </div>
 
           <div className="progress-wrap">
-            <div className="progress-bar"><div className="progress-fill" style={{width: progressPct+"%", background: subj.color}} /></div>
+            <div className="progress-bar"><div className="progress-fill" style={{width: progress+"%", background: "#f59e0b"}} /></div>
             <span className="progress-text">{idx+1} / {shuffled.length}</span>
           </div>
           <div className="cat-badge">{current.category}</div>
@@ -568,65 +1203,25 @@
               </div>
             ) : (
               <div>
-                {/* 正誤表示 */}
-                {isChoice && <div className={"result-banner " + (judged==="correct"?"result-correct":"result-incorrect")}>{judged==="correct" ? "正解！" : "不正解"}</div>}
-
+                {isChoice && <div className={"result-banner " + (judged==="correct"?"result-correct":"result-incorrect")}>{judged==="correct" ? "⭕ 正解！" : "❌ 不正解"}</div>}
                 <div className="card-label">A.</div>
                 <p className="answer-text">{isChoice ? labels[current.correctIndex] + ". " + current.choices[current.correctIndex] : current.correctAnswer}</p>
                 <div className="explain-box">
                   <div className="explain-label">解説</div>
                   <p className="explain-text">{current.explanation}</p>
                 </div>
-
-                {/* 記述式: まず正誤判定 */}
                 {!isChoice && judged === null && (
                   <div className="self-judge">
                     <p className="self-judge-label">正解できましたか？</p>
                     <div className="judge-btns">
-                      <button className="judge-btn judge-ok" onClick={() => setJudged("correct")}>正解</button>
-                      <button className="judge-btn judge-ng" onClick={() => setJudged("incorrect")}>不正解</button>
+                      <button className="judge-btn judge-ok" onClick={() => setJudged("correct")}>⭕ 正解</button>
+                      <button className="judge-btn judge-ng" onClick={() => setJudged("incorrect")}>❌ 不正解</button>
                     </div>
                   </div>
                 )}
-
-                {/* 正解時: 3段階自己評価 */}
-                {judged === "correct" && (
-                  <div className="rating-section">
-                    <div className="rating-label">この問題の手ごたえは？</div>
-                    <div className="rating-btns">
-                      <button className={"rating-btn rating-easy" + (selfRating==="easy"?" selected":"")} onClick={() => setSelfRating("easy")}>
-                        😊 簡単
-                      </button>
-                      <button className={"rating-btn rating-normal" + (selfRating==="normal"?" selected":"")} onClick={() => setSelfRating("normal")}>
-                        🤔 普通
-                      </button>
-                      <button className={"rating-btn rating-hard" + (selfRating==="hard"?" selected":"")} onClick={() => setSelfRating("hard")}>
-                        😰 難しい
-                      </button>
-                    </div>
-                    {selfRating && (
-                      <div style={{marginTop:10, fontSize:12, color:"#6b7280"}}>
-                        {selfRating === "easy" && "→ 1ステップ飛ばして進みます"}
-                        {selfRating === "normal" && "→ 通常通り次のステップへ進みます"}
-                        {selfRating === "hard" && "→ 通常通り進み、苦手マークを付けます"}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* 不正解時のフィードバック */}
-                {judged === "incorrect" && (
-                  <div style={{background:"#fef2f2", borderRadius:12, padding:12, marginBottom:16, textAlign:"center"}}>
-                    <div style={{fontSize:13, color:"#dc2626", fontWeight:600}}>
-                      {currentStep <= 1 ? "→ ステップ1を維持します（1日後に再出題）" : "→ ステップ" + (currentStep - 1) + "に戻ります（" + REVIEW_STEPS[Math.max(1, currentStep - 1)] + "日後に再出題）"}
-                    </div>
-                  </div>
-                )}
-
-                {/* 次の問題へ */}
-                {judged !== null && (
-                  <button className="btn-next" onClick={handleSubmitAndNext} disabled={!canProceed} style={{opacity: canProceed ? 1 : 0.5}}>
-                    次の問題へ →
+                {(isChoice || judged !== null) && (
+                  <button className="btn-next" onClick={handleNext}>
+                    {idx + 1 >= shuffled.length ? "復習を完了する ✓" : "次の問題へ →"}
                   </button>
                 )}
               </div>
@@ -636,247 +1231,414 @@
       );
     }
 
-    // ============ 成績 ============
-    function StatsPage({ results, progress }) {
-      const total = results.length;
-      const correct = results.filter(r => r.correct).length;
-      const accuracy = total > 0 ? Math.round((correct/total)*100) : 0;
-      const mastered = progress.filter(p => p.step >= MASTERED_STEP).length;
-      const hardItems = progress.filter(p => p.difficulty === 'hard' && p.step < MASTERED_STEP).length;
+    // ============ 復習間隔設定 ============
+    function SettingsPage({reviewIntervals, onUpdateIntervals, onBack, onResetAll, onResetSubject, onExport, onImport, results, reviewLog}) {
+      const [intervals, setIntervals] = useState([...reviewIntervals]);
+      const [saved, setSaved] = useState(false);
+      const [settingsTab, setSettingsTab] = useState("intervals"); // "intervals" | "data"
+      const [importText, setImportText] = useState("");
+      const [importMsg, setImportMsg] = useState(null);
+      const [exportMsg, setExportMsg] = useState(null);
+
+      const handleChange = (index, value) => {
+        const num = parseInt(value, 10);
+        if (isNaN(num) || num < 1) return;
+        setIntervals(prev => {
+          const next = [...prev];
+          next[index] = num;
+          return next;
+        });
+        setSaved(false);
+      };
+
+      const addInterval = () => {
+        const lastVal = intervals[intervals.length - 1] || 1;
+        setIntervals(prev => [...prev, lastVal + 14]);
+        setSaved(false);
+      };
+
+      const removeInterval = (index) => {
+        if (intervals.length <= 2) return;
+        setIntervals(prev => prev.filter((_, i) => i !== index));
+        setSaved(false);
+      };
+
+      const handleSave = () => {
+        const sorted = [...intervals].sort((a, b) => a - b);
+        onUpdateIntervals(sorted);
+        setIntervals(sorted);
+        setSaved(true);
+      };
+
+      const handleReset = () => {
+        setIntervals([...DEFAULT_REVIEW_INTERVALS]);
+        setSaved(false);
+      };
+
+      // エクスポート: クリップボードにコピー
+      const handleExportClipboard = () => {
+        const json = onExport();
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(json).then(() => {
+            setExportMsg("クリップボードにコピーしました");
+            setTimeout(() => setExportMsg(null), 3000);
+          }).catch(() => {
+            fallbackCopyToClipboard(json);
+          });
+        } else {
+          fallbackCopyToClipboard(json);
+        }
+      };
+
+      const fallbackCopyToClipboard = (text) => {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand("copy");
+          setExportMsg("クリップボードにコピーしました");
+        } catch(e) {
+          setExportMsg("コピーに失敗しました");
+        }
+        document.body.removeChild(ta);
+        setTimeout(() => setExportMsg(null), 3000);
+      };
+
+      // エクスポート: ファイルとして共有/ダウンロード
+      const handleExportFile = () => {
+        const json = onExport();
+        const blob = new Blob([json], {type: "application/json"});
+        const dateStr = new Date().toISOString().slice(0,10);
+        const fileName = "shindan_backup_" + dateStr + ".json";
+
+        // Web Share APIが使えるか試す
+        if (navigator.share && navigator.canShare) {
+          const file = new File([blob], fileName, {type: "application/json"});
+          if (navigator.canShare({files: [file]})) {
+            navigator.share({files: [file], title: "診断士アプリ バックアップ"}).catch(() => {
+              downloadFallback(blob, fileName);
+            });
+            return;
+          }
+        }
+        downloadFallback(blob, fileName);
+      };
+
+      const downloadFallback = (blob, fileName) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        setExportMsg("ファイルをダウンロードしました");
+        setTimeout(() => setExportMsg(null), 3000);
+      };
+
+      // インポート: テキスト貼り付け
+      const handleImportText = () => {
+        if (!importText.trim()) { setImportMsg({ok:false, text:"テキストを入力してください"}); return; }
+        if (!confirm("現在の学習データを上書きしますか？この操作は元に戻せません。")) return;
+        const result = onImport(importText);
+        setImportMsg({ok: result.success, text: result.message});
+        if (result.success) setImportText("");
+        setTimeout(() => setImportMsg(null), 5000);
+      };
+
+      // インポート: ファイル選択
+      const handleImportFile = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          if (!confirm("現在の学習データを上書きしますか？この操作は元に戻せません。")) return;
+          const result = onImport(ev.target.result);
+          setImportMsg({ok: result.success, text: result.message});
+          setTimeout(() => setImportMsg(null), 5000);
+        };
+        reader.readAsText(file);
+        e.target.value = "";
+      };
+
+      // 全データリセット
+      const handleResetAll = () => {
+        if (!confirm("すべての学習データ（成績・復習・設定）をリセットしますか？\n\nこの操作は元に戻せません。")) return;
+        if (!confirm("本当にリセットしてよろしいですか？")) return;
+        onResetAll();
+        setIntervals([...DEFAULT_REVIEW_INTERVALS]);
+        setSaved(false);
+        setImportMsg({ok:true, text:"すべてのデータをリセットしました"});
+        setTimeout(() => setImportMsg(null), 3000);
+      };
+
+      // 科目別リセット
+      const handleResetSubject = (subjectKey) => {
+        const subj = SUBJECTS[subjectKey];
+        if (!confirm(subj.name + " の学習データをリセットしますか？\n\nこの科目の成績と復習データが削除されます。")) return;
+        onResetSubject(subjectKey);
+        setImportMsg({ok:true, text: subj.name + " のデータをリセットしました"});
+        setTimeout(() => setImportMsg(null), 3000);
+      };
 
       return (
         <div>
-          <h2 className="section-title">📊 学習成績</h2>
-          <div className="stats-row">
-            <div className="stat-card"><div className="stat-num">{total}</div><div className="stat-label">総回答数</div></div>
-            <div className="stat-card"><div className="stat-num" style={{color:"#27ae60"}}>{accuracy}%</div><div className="stat-label">正答率</div></div>
-            <div className="stat-card"><div className="stat-num" style={{color:"#f59e0b"}}>{mastered}</div><div className="stat-label">定着</div></div>
-            <div className="stat-card"><div className="stat-num" style={{color:"#dc2626"}}>{hardItems}</div><div className="stat-label">苦手</div></div>
+          <button className="btn-back" onClick={onBack}>← 復習に戻る</button>
+          <h2 className="section-title">⚙️ 設定</h2>
+
+          <div className="tab-bar">
+            <button className={"tab-btn" + (settingsTab==="intervals"?" active":"")} onClick={() => setSettingsTab("intervals")}>復習間隔</button>
+            <button className={"tab-btn" + (settingsTab==="data"?" active":"")} onClick={() => setSettingsTab("data")}>データ管理</button>
           </div>
 
-          <h3 className="sub-title">科目別の進捗</h3>
-          {Object.entries(SUBJECTS).map(([key, subj]) => {
-            const qs = ALL_QUESTIONS[key] || [];
-            const subProgress = progress.filter(p => p.subject === key);
-            const subMastered = subProgress.filter(p => p.step >= MASTERED_STEP).length;
-            const subHard = subProgress.filter(p => p.difficulty === 'hard' && p.step < MASTERED_STEP).length;
-            const subResults = results.filter(r => r.subject === key);
-            const subCorrect = subResults.filter(r => r.correct).length;
-            const pct = qs.length > 0 ? Math.round((subMastered / qs.length) * 100) : 0;
-            return (
-              <div key={key} className="subject-stats-card">
-                <div className="subject-stats-icon">{subj.icon}</div>
-                <div className="subject-stats-info">
-                  <div className="subject-stats-name">{subj.name}</div>
-                  <div className="subject-stats-detail">
-                    定着{subMastered}/{qs.length}問
-                    {subHard > 0 && <span style={{color:"#dc2626", marginLeft:8}}>苦手{subHard}問</span>}
-                    {subResults.length > 0 && <span style={{marginLeft:8}}>正答率{subResults.length > 0 ? Math.round((subCorrect/subResults.length)*100) : 0}%</span>}
-                  </div>
-                  <div className="subject-stats-bar"><div className="subject-stats-fill" style={{width: pct+"%", background: subj.color}} /></div>
-                </div>
-                <div className="subject-stats-pct" style={{color: subProgress.length > 0 ? subj.color : "#d1d5db"}}>{pct}%</div>
+          {settingsTab === "intervals" && (
+            <div>
+              <div className="info-card" style={{marginBottom:16}}>
+                <p className="info-text">復習の間隔を自由に設定できます。設定した回数分すべて連続正解すると「定着👑」となります。</p>
               </div>
-            );
-          })}
 
-          <h3 className="sub-title">最近の学習履歴</h3>
-          <div className="history-list">
-            {results.length === 0 ? <p style={{padding:16, color:"#9ca3af", textAlign:"center"}}>まだ学習記録がありません</p> :
-              [...results].reverse().slice(0,30).map((r,i) => {
-                const subj = SUBJECTS[r.subject];
-                const qs = ALL_QUESTIONS[r.subject] || [];
-                const q = qs.find(q => q.id === r.questionId);
-                return (
-                  <div key={i} className="history-item">
-                    <span>{r.correct ? "⭕" : "❌"}</span>
-                    <span style={{fontSize:10, marginRight:-4}}>{subj ? subj.icon : ""}</span>
-                    <span className="history-q">{q ? (q.question.length>30 ? q.question.substring(0,30)+"..." : q.question) : "不明"}</span>
-                    <span className="history-date">{formatDate(r.date)}</span>
+              <div style={{background:"#fff",borderRadius:12,padding:20,boxShadow:"0 1px 3px rgba(0,0,0,0.08)",marginBottom:16}}>
+                {intervals.map((val, i) => (
+                  <div key={i} style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
+                    <span style={{fontSize:13,fontWeight:700,color:"#6b7280",minWidth:60}}>{i+1}回目</span>
+                    <input
+                      type="number"
+                      value={val}
+                      min="1"
+                      onChange={e => handleChange(i, e.target.value)}
+                      style={{flex:1,padding:"10px 14px",border:"2px solid #e5e7eb",borderRadius:10,fontSize:16,fontWeight:600,textAlign:"center"}}
+                    />
+                    <span style={{fontSize:13,color:"#6b7280"}}>日後</span>
+                    {intervals.length > 2 && (
+                      <button onClick={() => removeInterval(i)} style={{background:"#f8d7da",color:"#721c24",border:"none",borderRadius:8,padding:"6px 10px",fontSize:14,cursor:"pointer",fontWeight:700}}>×</button>
+                    )}
                   </div>
-                );
-              })
-            }
-          </div>
-        </div>
-      );
-    }
+                ))}
 
-    // ============ 復習 ============
-    function ReviewPage({ progress, getReviewItems, onStartReview }) {
-      const [filter, setFilter] = useState("due"); // "due" | "hard" | "mastered"
-      const reviewItems = getReviewItems();
+                <div style={{display:"flex",gap:8,marginTop:16}}>
+                  <button onClick={addInterval} style={{flex:1,padding:"10px 0",background:"#f3f4f6",color:"#374151",border:"none",borderRadius:10,fontSize:14,fontWeight:700,cursor:"pointer"}}>+ 回数を追加</button>
+                  <button onClick={handleReset} style={{flex:1,padding:"10px 0",background:"#f3f4f6",color:"#6b7280",border:"none",borderRadius:10,fontSize:14,fontWeight:600,cursor:"pointer"}}>初期値に戻す</button>
+                </div>
+              </div>
 
-      const hardItems = useMemo(() => {
-        return progress.filter(p => p.difficulty === 'hard' && p.step < MASTERED_STEP).map(p => {
-          const subjectQuestions = ALL_QUESTIONS[p.subject] || [];
-          const q = subjectQuestions.find(q => q.id === p.questionId);
-          if (!q) return null;
-          return { ...q, subject: p.subject, step: p.step, difficulty: p.difficulty, nextReviewAt: p.nextReviewAt };
-        }).filter(Boolean);
-      }, [progress]);
+              <div style={{background:"#f8fafc",borderRadius:12,padding:16,marginBottom:16}}>
+                <p style={{fontSize:13,fontWeight:700,color:"#374151",marginBottom:8}}>プレビュー</p>
+                <div className="timeline">
+                  {[...intervals].sort((a,b) => a-b).map((d,i) => (
+                    <div key={i} className="timeline-item">
+                      <div className="timeline-dot" />
+                      <span className="timeline-text">{d}日後</span>
+                      <span style={{fontSize:10,color:"#6b7280"}}>{i+1}回目</span>
+                    </div>
+                  ))}
+                  <div className="timeline-item">
+                    <div className="timeline-dot" style={{background:"#f59e0b"}} />
+                    <span className="timeline-text">👑</span>
+                    <span style={{fontSize:10,color:"#6b7280"}}>定着!</span>
+                  </div>
+                </div>
+              </div>
 
-      const masteredItems = useMemo(() => {
-        return progress.filter(p => p.step >= MASTERED_STEP).map(p => {
-          const subjectQuestions = ALL_QUESTIONS[p.subject] || [];
-          const q = subjectQuestions.find(q => q.id === p.questionId);
-          if (!q) return null;
-          return { ...q, subject: p.subject, masteredAt: p.masteredAt };
-        }).filter(Boolean);
-      }, [progress]);
+              <button className="btn-action" onClick={handleSave} style={{marginBottom:8}}>
+                {saved ? "✅ 保存しました！" : "保存する"}
+              </button>
 
-      const displayItems = filter === "due" ? reviewItems : filter === "hard" ? hardItems : masteredItems;
-
-      return (
-        <div>
-          <h2 className="section-title">🔔 復習</h2>
-
-          <div className="info-card" style={{marginBottom:16}}>
-            <p className="info-text">学習後 1日→7日→16日→35日 のタイミングで復習します。すべて正解すると「定着」です。</p>
-          </div>
-
-          {/* フィルタタブ */}
-          <div className="filter-tabs">
-            <button className={"filter-tab" + (filter==="due"?" active":"")} onClick={() => setFilter("due")}>
-              今日の復習 ({reviewItems.length})
-            </button>
-            <button className={"filter-tab" + (filter==="hard"?" hard-active":"")} onClick={() => setFilter("hard")}>
-              苦手問題 ({hardItems.length})
-            </button>
-            <button className={"filter-tab" + (filter==="mastered"?" active":"")} onClick={() => setFilter("mastered")}>
-              定着済み ({masteredItems.length})
-            </button>
-          </div>
-
-          {displayItems.length === 0 ? (
-            <div className="empty-state">
-              <div className="empty-emoji">{filter === "due" ? "✨" : filter === "hard" ? "💪" : "🎉"}</div>
-              <p className="empty-title">
-                {filter === "due" && "復習が必要な問題はありません"}
-                {filter === "hard" && "苦手問題はありません"}
-                {filter === "mastered" && "定着した問題はまだありません"}
-              </p>
-              <p className="empty-text">
-                {filter === "due" && "問題を解くと復習スケジュールが自動設定されます"}
-                {filter === "hard" && "「難しい」と評価した問題がここに表示されます"}
-                {filter === "mastered" && "35日後の復習を正解すると定着になります"}
+              <p style={{fontSize:12,color:"#9ca3af",textAlign:"center",lineHeight:1.6}}>
+                デフォルト: {DEFAULT_REVIEW_INTERVALS.map(d => d + "日後").join(" → ")} → 👑<br/>
+                ※ 保存時に日数は自動で昇順に並び替えられます
               </p>
             </div>
-          ) : (
-            <div className="review-list">
-              {displayItems.map((item, i) => {
-                const subj = SUBJECTS[item.subject];
-                return (
-                  <div key={i} className="review-item">
-                    <div className="review-item-header">
-                      <span className="cat-badge-sm">{subj ? subj.icon + " " + subj.name : item.category}</span>
-                      <div style={{display:"flex", gap:6, alignItems:"center"}}>
-                        {item.difficulty === "hard" && <span className="hard-badge">苦手</span>}
-                        {filter === "due" && <span className="review-timing" style={{color: "#f59e0b"}}>ステップ{item.step}</span>}
-                        {filter === "mastered" && <span className="mastered-badge">定着</span>}
-                      </div>
-                    </div>
-                    <p className="review-q">{item.question.length > 60 ? item.question.substring(0,60) + "..." : item.question}</p>
-                    {filter === "due" && <StepProgress currentStep={item.step} />}
-                    {filter === "due" && item.nextReviewAt && (
-                      <p className="review-meta">復習予定: {formatShortDate(item.nextReviewAt)}</p>
-                    )}
-                    {filter === "mastered" && item.masteredAt && (
-                      <p className="review-meta">定着日: {formatShortDate(item.masteredAt)}</p>
-                    )}
-                  </div>
-                );
-              })}
+          )}
 
-              {filter === "due" && reviewItems.length > 0 && (
-                <div style={{marginTop:8}}>
-                  {/* 科目ごとの復習ボタン */}
-                  {[...new Set(reviewItems.map(r => r.subject))].map(subjectKey => {
-                    const subj = SUBJECTS[subjectKey];
-                    const count = reviewItems.filter(r => r.subject === subjectKey).length;
+          {settingsTab === "data" && (
+            <div>
+              {/* 通知メッセージ */}
+              {importMsg && (
+                <div style={{background: importMsg.ok ? "#d4edda" : "#f8d7da", color: importMsg.ok ? "#155724" : "#721c24", borderRadius:10, padding:"10px 14px", marginBottom:16, fontSize:14, fontWeight:600, textAlign:"center"}}>
+                  {importMsg.text}
+                </div>
+              )}
+              {exportMsg && (
+                <div style={{background:"#d4edda", color:"#155724", borderRadius:10, padding:"10px 14px", marginBottom:16, fontSize:14, fontWeight:600, textAlign:"center"}}>
+                  {exportMsg}
+                </div>
+              )}
+
+              {/* 現在のデータ概要 */}
+              <div style={{background:"#fff",borderRadius:12,padding:20,boxShadow:"0 1px 3px rgba(0,0,0,0.08)",marginBottom:16}}>
+                <h3 style={{fontSize:15,fontWeight:700,color:"#1e293b",marginBottom:12}}>現在のデータ</h3>
+                <div style={{display:"flex",gap:10}}>
+                  <div className="stat-card" style={{flex:1}}>
+                    <div className="stat-num" style={{fontSize:20}}>{results.length}</div>
+                    <div className="stat-label">解答記録</div>
+                  </div>
+                  <div className="stat-card" style={{flex:1}}>
+                    <div className="stat-num" style={{fontSize:20}}>{reviewLog.length}</div>
+                    <div className="stat-label">復習データ</div>
+                  </div>
+                  <div className="stat-card" style={{flex:1}}>
+                    <div className="stat-num" style={{fontSize:20}}>{reviewLog.filter(r => r.masteredAt).length}</div>
+                    <div className="stat-label">定着済み</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* エクスポート */}
+              <div style={{background:"#fff",borderRadius:12,padding:20,boxShadow:"0 1px 3px rgba(0,0,0,0.08)",marginBottom:16}}>
+                <h3 style={{fontSize:15,fontWeight:700,color:"#1e293b",marginBottom:8}}>バックアップ（エクスポート）</h3>
+                <p style={{fontSize:13,color:"#6b7280",marginBottom:14,lineHeight:1.6}}>学習データをJSON形式でバックアップします。クリップボードにコピーするか、ファイルとして保存できます。</p>
+                <div style={{display:"flex",gap:8}}>
+                  <button onClick={handleExportClipboard} style={{flex:1,padding:"12px 0",background:"linear-gradient(135deg, #2563eb, #1d4ed8)",color:"#fff",border:"none",borderRadius:10,fontSize:14,fontWeight:700,cursor:"pointer"}}>
+                    クリップボードにコピー
+                  </button>
+                  <button onClick={handleExportFile} style={{flex:1,padding:"12px 0",background:"#f3f4f6",color:"#374151",border:"none",borderRadius:10,fontSize:14,fontWeight:700,cursor:"pointer"}}>
+                    ファイルに保存
+                  </button>
+                </div>
+              </div>
+
+              {/* インポート */}
+              <div style={{background:"#fff",borderRadius:12,padding:20,boxShadow:"0 1px 3px rgba(0,0,0,0.08)",marginBottom:16}}>
+                <h3 style={{fontSize:15,fontWeight:700,color:"#1e293b",marginBottom:8}}>復元（インポート）</h3>
+                <p style={{fontSize:13,color:"#6b7280",marginBottom:14,lineHeight:1.6}}>バックアップしたデータを復元します。ファイルを選択するか、テキストを貼り付けてください。</p>
+
+                <div style={{marginBottom:12}}>
+                  <label style={{display:"block",padding:"12px 0",background:"linear-gradient(135deg, #10b981, #059669)",color:"#fff",border:"none",borderRadius:10,fontSize:14,fontWeight:700,cursor:"pointer",textAlign:"center"}}>
+                    ファイルを選択して復元
+                    <input type="file" accept=".json,application/json" onChange={handleImportFile} style={{display:"none"}} />
+                  </label>
+                </div>
+
+                <div style={{position:"relative"}}>
+                  <textarea
+                    value={importText}
+                    onChange={e => setImportText(e.target.value)}
+                    placeholder="バックアップしたJSONテキストをここに貼り付け..."
+                    rows={4}
+                    style={{width:"100%",padding:12,border:"2px solid #e5e7eb",borderRadius:10,fontSize:13,fontFamily:"inherit",resize:"vertical",lineHeight:1.5}}
+                  />
+                  {importText && (
+                    <button onClick={handleImportText} style={{marginTop:8,width:"100%",padding:"10px 0",background:"#f3f4f6",color:"#374151",border:"none",borderRadius:10,fontSize:14,fontWeight:700,cursor:"pointer"}}>
+                      テキストから復元
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* 科目別リセット */}
+              <div style={{background:"#fff",borderRadius:12,padding:20,boxShadow:"0 1px 3px rgba(0,0,0,0.08)",marginBottom:16}}>
+                <h3 style={{fontSize:15,fontWeight:700,color:"#1e293b",marginBottom:8}}>科目別データリセット</h3>
+                <p style={{fontSize:13,color:"#6b7280",marginBottom:14,lineHeight:1.6}}>特定の科目の学習データのみをリセットします。他の科目のデータには影響しません。</p>
+                <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                  {Object.entries(SUBJECTS).map(([key, subj]) => {
+                    const subResults = results.filter(r => r.subject === key);
+                    const subReview = reviewLog.filter(r => r.subject === key);
+                    if (subResults.length === 0 && subReview.length === 0) return null;
                     return (
-                      <button key={subjectKey} className="btn-action" style={{marginBottom:8}} onClick={() => onStartReview(subjectKey)}>
-                        {subj.icon} {subj.name}の復習を始める ({count}問)
-                      </button>
+                      <div key={key} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 0",borderBottom:"1px solid #f3f4f6"}}>
+                        <div style={{display:"flex",alignItems:"center",gap:8}}>
+                          <span style={{fontSize:18}}>{subj.icon}</span>
+                          <div>
+                            <div style={{fontSize:13,fontWeight:600,color:"#1e293b"}}>{subj.name}</div>
+                            <div style={{fontSize:11,color:"#9ca3af"}}>解答{subResults.length}件 / 復習{subReview.length}件</div>
+                          </div>
+                        </div>
+                        <button onClick={() => handleResetSubject(key)} style={{padding:"6px 14px",background:"#fef2f2",color:"#dc2626",border:"1px solid #fecaca",borderRadius:8,fontSize:12,fontWeight:600,cursor:"pointer"}}>
+                          リセット
+                        </button>
+                      </div>
                     );
                   })}
                 </div>
-              )}
+              </div>
+
+              {/* 全データリセット */}
+              <div style={{background:"#fff",borderRadius:12,padding:20,boxShadow:"0 1px 3px rgba(0,0,0,0.08)",marginBottom:16,border:"2px solid #fecaca"}}>
+                <h3 style={{fontSize:15,fontWeight:700,color:"#dc2626",marginBottom:8}}>全データリセット</h3>
+                <p style={{fontSize:13,color:"#6b7280",marginBottom:14,lineHeight:1.6}}>すべての学習データ（成績・復習・復習間隔設定）を初期状態に戻します。この操作は元に戻せません。</p>
+                <button onClick={handleResetAll} style={{width:"100%",padding:"12px 0",background:"#dc2626",color:"#fff",border:"none",borderRadius:10,fontSize:14,fontWeight:700,cursor:"pointer"}}>
+                  すべてのデータを削除する
+                </button>
+              </div>
+
+              <p style={{fontSize:12,color:"#9ca3af",textAlign:"center",lineHeight:1.6}}>
+                ※ リセット前にバックアップを取ることをおすすめします
+              </p>
             </div>
           )}
         </div>
       );
     }
 
-    // ============ 使い方ガイド ============
-    function GuidePage() {
+    // ============ プラン（科目別購入） ============
+    function SubscriptionPage({purchasedSubjects, onPurchaseSubject, onPurchaseAll, isAllPurchased}) {
       return (
         <div>
-          <h2 className="section-title">❓ 使い方ガイド</h2>
+          <h2 className="section-title">⭐ プラン・購入</h2>
 
-          <div className="how-card">
-            <h3 className="info-title">復習のしくみ</h3>
-            <p className="info-text" style={{marginBottom:16}}>忘却曲線にもとづいた分散学習を採用しています。問題を解くと、記憶が薄れるタイミングで自動的に復習リストに追加されます。</p>
+          <div className="info-card" style={{marginBottom:16}}>
+            <h3 className="info-title">無料プラン</h3>
+            <p className="info-text">各科目{FREE_LIMIT}問まで無料で利用できます。成績カウント・復習リマインド・定着管理はすべて無料です。全問題を利用するには科目の購入が必要です。</p>
+          </div>
 
-            <div style={{background:"#f8fafc", borderRadius:12, padding:16, marginBottom:16}}>
-              <div style={{textAlign:"center", fontSize:13, fontWeight:600, color:"#374151", marginBottom:12}}>復習スケジュール</div>
-              <div style={{display:"flex", alignItems:"center", justifyContent:"center", gap:4, flexWrap:"wrap"}}>
-                <span style={{background:"#2563eb", color:"#fff", padding:"6px 10px", borderRadius:8, fontSize:12, fontWeight:700}}>初回</span>
-                <span style={{color:"#2563eb", fontWeight:700}}>→</span>
-                <span style={{background:"#eff6ff", color:"#2563eb", padding:"6px 10px", borderRadius:8, fontSize:12, fontWeight:700}}>1日後</span>
-                <span style={{color:"#2563eb", fontWeight:700}}>→</span>
-                <span style={{background:"#eff6ff", color:"#2563eb", padding:"6px 10px", borderRadius:8, fontSize:12, fontWeight:700}}>7日後</span>
-                <span style={{color:"#2563eb", fontWeight:700}}>→</span>
-                <span style={{background:"#eff6ff", color:"#2563eb", padding:"6px 10px", borderRadius:8, fontSize:12, fontWeight:700}}>16日後</span>
-                <span style={{color:"#2563eb", fontWeight:700}}>→</span>
-                <span style={{background:"#eff6ff", color:"#2563eb", padding:"6px 10px", borderRadius:8, fontSize:12, fontWeight:700}}>35日後</span>
-                <span style={{color:"#f59e0b", fontWeight:700}}>→</span>
-                <span style={{background:"linear-gradient(135deg, #f59e0b, #d97706)", color:"#fff", padding:"6px 10px", borderRadius:8, fontSize:12, fontWeight:700}}>定着！</span>
+          {!isAllPurchased && (
+            <div className="pricing-card active" style={{marginBottom:16}}>
+              <div className="plan-badge">お得！</div>
+              <div className="pricing-card-header" style={{marginTop:8}}>
+                <div className="pricing-card-name">全科目セット</div>
+                <div className="pricing-card-price">¥{ALL_SUBJECTS_PRICE.toLocaleString()}</div>
               </div>
+              <div className="pricing-card-desc">全7科目の問題がすべて利用可能（科目別購入より¥{(SUBJECT_PRICE * 7 - ALL_SUBJECTS_PRICE).toLocaleString()}お得）</div>
+              <button className="pricing-card-btn pricing-buy" onClick={onPurchaseAll}>全科目セットを購入（テスト）</button>
             </div>
+          )}
+
+          {isAllPurchased && (
+            <div className="pricing-card active" style={{marginBottom:16}}>
+              <div className="pricing-card-header">
+                <div className="pricing-card-name">全科目セット</div>
+                <div className="pricing-card-price">購入済み</div>
+              </div>
+              <button className="pricing-card-btn pricing-bought">✅ 全科目利用可能</button>
+            </div>
+          )}
+
+          <h3 className="sub-title">科目別購入</h3>
+          <div className="pricing-grid">
+            {Object.entries(SUBJECTS).map(([key, subj]) => {
+              const qs = ALL_QUESTIONS[key] || [];
+              const bought = isAllPurchased || purchasedSubjects.includes(key);
+              return (
+                <div key={key} className={"pricing-card" + (bought?" active":"")}>
+                  <div className="pricing-card-header">
+                    <div className="pricing-card-name">{subj.icon} {subj.name}</div>
+                    <div className="pricing-card-price">{bought ? "購入済み" : "¥" + SUBJECT_PRICE}</div>
+                  </div>
+                  <div className="pricing-card-desc">{qs.length}問収録（無料: {FREE_LIMIT}問 → 購入後: 全{qs.length}問）</div>
+                  {bought ? (
+                    <button className="pricing-card-btn pricing-bought">✅ 利用可能</button>
+                  ) : (
+                    <button className="pricing-card-btn pricing-buy" onClick={() => onPurchaseSubject(key)}>購入する（テスト）</button>
+                  )}
+                </div>
+              );
+            })}
           </div>
 
-          <div className="how-card">
-            <h3 className="info-title">間違えたとき</h3>
-            <p className="info-text">間違えた問題は、1つ前のステップに戻ります。最初からやり直しにはなりませんので、安心してチャレンジしてください。</p>
-            <div style={{background:"#fef2f2", borderRadius:8, padding:12, marginTop:12, fontSize:13, color:"#dc2626", lineHeight:1.8}}>
-              例: 16日後で不正解 → 7日後に戻る<br/>
-              　　7日後で不正解 → 1日後に戻る<br/>
-              　　1日後で不正解 → 1日後を維持
-            </div>
-          </div>
-
-          <div className="how-card">
-            <h3 className="info-title">自己評価について</h3>
-            <p className="info-text" style={{marginBottom:12}}>正解後に「簡単・普通・難しい」を選べます。</p>
-
-            <div className="how-step">
-              <div className="how-num" style={{background:"#059669"}}>😊</div>
-              <div className="how-text"><strong>簡単</strong> — 次の復習を1段階スキップ。自信のある問題を早く卒業させましょう。</div>
-            </div>
-            <div className="how-step">
-              <div className="how-num">🤔</div>
-              <div className="how-text"><strong>普通</strong> — 通常の復習スケジュールで進みます。</div>
-            </div>
-            <div className="how-step">
-              <div className="how-num" style={{background:"#dc2626"}}>😰</div>
-              <div className="how-text"><strong>難しい</strong> — スケジュールは変わりませんが「苦手問題」として記録。復習タブでまとめて確認できます。</div>
-            </div>
-          </div>
-
-          <div className="how-card">
-            <h3 className="info-title">定着した問題</h3>
-            <p className="info-text">すべてのステップを正解すると「定着」となり、復習リストから卒業します。定着した問題は復習タブの「定着済み」で確認できます。</p>
-          </div>
+          <p className="test-note">※ これはテスト版です。実際の課金は発生しません。ボタンを押すと購入状態が有効になります。</p>
         </div>
       );
     }
 
     // ============ レンダリング ============
-    // Babelトランスパイル後に直接レンダリング（イベント不要）
-    if (Object.keys(ALL_QUESTIONS).length > 0) {
+    // データ読み込み完了を待ってからReactアプリを起動
+    document.addEventListener('data-loaded', function() {
       ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-    }
+    });
   </script>
 </body>
 </html>
