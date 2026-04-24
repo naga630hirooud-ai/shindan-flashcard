@@ -164,6 +164,29 @@
     .how-num { width: 24px; height: 24px; border-radius: 50%; background: #2563eb; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
     .how-text { font-size: 13px; color: #374151; line-height: 1.6; }
     .how-arrow { text-align: center; font-size: 18px; color: #2563eb; margin: 4px 0; font-weight: 700; }
+
+    /* Question List */
+    .list-subject-select { width: 100%; padding: 12px 14px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 14px; background: #fff; cursor: pointer; margin-bottom: 16px; }
+    .list-summary { background: #fff; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 16px; }
+    .list-category-header { font-size: 14px; font-weight: 700; color: #1e293b; padding: 12px 0 8px 0; margin: 12px 0 8px 0; border-bottom: 2px solid #e5e7eb; }
+    .question-list-item { background: #fff; border-radius: 10px; padding: 14px 14px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 10px; }
+    .question-list-item:active { transform: scale(0.98); }
+    .ql-num { font-weight: 700; color: #2563eb; min-width: 36px; flex-shrink: 0; }
+    .ql-text { flex: 1; font-size: 13px; color: #4b5563; line-height: 1.4; }
+    .ql-status { font-size: 18px; flex-shrink: 0; }
+    .ql-detail { background: #f8fafc; border-radius: 10px; padding: 16px; margin-top: 8px; margin-bottom: 8px; }
+    .ql-detail-section { margin-bottom: 12px; }
+    .ql-detail-section:last-child { margin-bottom: 0; }
+    .ql-detail-label { font-size: 11px; font-weight: 700; color: #2563eb; text-transform: uppercase; margin-bottom: 6px; }
+    .ql-detail-question { font-size: 14px; color: #1e293b; line-height: 1.7; margin-bottom: 12px; }
+    .ql-detail-choices { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+    .ql-detail-choice { display: flex; gap: 10px; padding: 10px; background: #fff; border-radius: 8px; border-left: 3px solid #e5e7eb; font-size: 13px; line-height: 1.5; }
+    .ql-detail-choice.correct { border-left-color: #10b981; background: #f0fdf4; }
+    .ql-detail-choice.choice-label { font-weight: 700; color: #2563eb; min-width: 18px; flex-shrink: 0; }
+    .ql-detail-explanation { background: #fff; border-left: 4px solid #2563eb; border-radius: 0 8px 8px 0; padding: 12px; }
+    .ql-detail-explanation .ql-detail-label { margin-bottom: 4px; }
+    .ql-detail-explanation p { font-size: 13px; color: #374151; line-height: 1.6; }
+    .ql-detail-answer { background: #fff; border-left: 4px solid #2563eb; border-radius: 0 8px 8px 0; padding: 12px; }
   </style>
 </head>
 <body>
@@ -413,6 +436,7 @@
           <nav className="nav">
             {[
               { key: "home", label: "ホーム", icon: "🏠" },
+              { key: "list", label: "一覧", icon: "📋" },
               { key: "stats", label: "成績", icon: "📊" },
               { key: "review", label: "復習", icon: "🔔" },
               { key: "settings", label: "設定", icon: "⚙️" }
@@ -426,9 +450,10 @@
 
           <main className="main">
             {page === "home" && <HomePage onSelect={selectSubject} onGoToReview={() => setPage("review")} totalQ={totalQuestions} totalA={results.length} reviewCount={getReviewItems().length} masteredCount={masteredCount} hardCount={hardCount} results={results} progress={progress} />}
-            {page === "quiz" && selectedSubject && <QuizPage subjectKey={selectedSubject} questions={ALL_QUESTIONS[selectedSubject] || []} progress={progress} onResult={handleResult} onBack={goHome} />}
+            {page === "quiz" && selectedSubject && <QuizPage subjectKey={selectedSubject} questions={ALL_QUESTIONS[selectedSubject] || []} progress={progress} results={results} onResult={handleResult} onBack={goHome} />}
             {page === "quiz" && !selectedSubject && <SubjectSelectPage onSelect={selectSubject} results={results} progress={progress} />}
             {page === "stats" && <StatsPage results={results} progress={progress} />}
+            {page === "list" && <QuestionListPage results={results} progress={progress} />}
             {page === "review" && <ReviewPage progress={progress} getReviewItems={getReviewItems} onStartReview={(subjectKey) => {
               const allReview = getReviewItems();
               const filtered = subjectKey === "__all__" ? allReview : allReview.filter(item => item.subject === subjectKey);
@@ -549,7 +574,7 @@
     }
 
     // ============ クイズ ============
-    function QuizPage({ subjectKey, questions, progress, onResult, onBack }) {
+    function QuizPage({ subjectKey, questions, progress, results, onResult, onBack }) {
       const [idx, setIdx] = useState(0);
       const [flipped, setFlipped] = useState(false);
       const [userAnswer, setUserAnswer] = useState("");
@@ -560,8 +585,21 @@
       const [shuffled, setShuffled] = useState([]);
       const [completed, setCompleted] = useState(false);
 
+      const createWeightedShuffle = (questionsToShuffle) => {
+        const countMap = {};
+        results.filter(r => r.subject === subjectKey).forEach(r => {
+          countMap[r.questionId] = (countMap[r.questionId] || 0) + 1;
+        });
+        const withCount = questionsToShuffle.map(q => ({ ...q, answerCount: countMap[q.id] || 0 }));
+        withCount.sort((a, b) => {
+          if (a.answerCount !== b.answerCount) return a.answerCount - b.answerCount;
+          return Math.random() - 0.5;
+        });
+        return withCount;
+      };
+
       useEffect(() => {
-        setShuffled([...questions].sort(() => Math.random() - 0.5));
+        setShuffled(createWeightedShuffle([...questions]));
         setIdx(0); setFlipped(false); setUserAnswer(""); setSelectedChoice(null); setJudged(null); setSelfRating(null); setSubmitted(false); setCompleted(false);
       }, [questions]);
 
@@ -578,7 +616,7 @@
               <div style={{display:"flex",gap:10,justifyContent:"center",marginBottom:20}}>
                 <button className="btn-action" style={{maxWidth:200}} onClick={onBack}>ホームに戻る</button>
                 <button className="btn-secondary" style={{maxWidth:200}} onClick={() => {
-                  setShuffled([...questions].sort(() => Math.random() - 0.5));
+                  setShuffled(createWeightedShuffle([...questions]));
                   setIdx(0); setFlipped(false); setUserAnswer(""); setSelectedChoice(null); setJudged(null); setSelfRating(null); setSubmitted(false); setCompleted(false);
                 }}>もう一度挑戦</button>
               </div>
@@ -803,6 +841,123 @@
               })
             }
           </div>
+        </div>
+      );
+    }
+
+    // ============ 問題一覧 ============
+    function QuestionListPage({ results, progress }) {
+      const [selectedSubject, setSelectedSubject] = useState("keizai");
+      const [expandedId, setExpandedId] = useState(null);
+
+      const getStatusIcon = (questionId) => {
+        const progressEntry = progress.find(p => p.subject === selectedSubject && p.questionId === questionId);
+        if (!progressEntry) return "⬜";
+        const step = progressEntry.step;
+        const lastResult = [...results].reverse().find(r => r.subject === selectedSubject && r.questionId === questionId);
+
+        if (step >= MASTERED_STEP) return "👑";
+        if (step > 0) {
+          return lastResult && lastResult.correct ? "✅" : "❌";
+        }
+        return "⬜";
+      };
+
+      const questions = ALL_QUESTIONS[selectedSubject] || [];
+      const answerCounts = {};
+      results.filter(r => r.subject === selectedSubject).forEach(r => {
+        answerCounts[r.questionId] = (answerCounts[r.questionId] || 0) + 1;
+      });
+
+      const groupedByCategory = {};
+      questions.forEach(q => {
+        if (!groupedByCategory[q.category]) groupedByCategory[q.category] = [];
+        groupedByCategory[q.category].push(q);
+      });
+
+      const subj = SUBJECTS[selectedSubject];
+
+      return (
+        <div>
+          <h2 className="section-title">📋 問題一覧</h2>
+
+          <select className="list-subject-select" value={selectedSubject} onChange={e => { setSelectedSubject(e.target.value); setExpandedId(null); }}>
+            {Object.entries(SUBJECTS).map(([key, subject]) => (
+              <option key={key} value={key}>{subject.icon} {subject.name}</option>
+            ))}
+          </select>
+
+          <div className="list-summary">
+            <div style={{fontSize:14, color:"#6b7280", marginBottom:6}}>全問題数</div>
+            <div style={{fontSize:28, fontWeight:800, color:subj.color}}>{questions.length}</div>
+            <div style={{fontSize:12, color:"#9ca3af", marginTop:6}}>回答: {Object.keys(answerCounts).length}問</div>
+          </div>
+
+          {Object.entries(groupedByCategory).map(([category, categoryQuestions]) => (
+            <div key={category}>
+              <div className="list-category-header">{category}</div>
+              {categoryQuestions.map((q, i) => {
+                const isExpanded = expandedId === q.id;
+                const isChoice = q.choices !== null && q.choices !== undefined;
+                const labels = ["ア", "イ", "ウ", "エ"];
+                return (
+                  <div key={q.id}>
+                    <div
+                      className="question-list-item"
+                      onClick={() => setExpandedId(isExpanded ? null : q.id)}
+                      style={{backgroundColor: isExpanded ? "#eff6ff" : "#fff", borderLeft: isExpanded ? "4px solid #2563eb" : "none"}}
+                    >
+                      <span className="ql-num">Q{q.id}</span>
+                      <span className="ql-text">{q.question.length > 50 ? q.question.substring(0, 50) + "..." : q.question}</span>
+                      <span className="ql-status">{getStatusIcon(q.id)}</span>
+                    </div>
+                    {isExpanded && (
+                      <div className="ql-detail">
+                        <div className="ql-detail-section">
+                          <div className="ql-detail-label">問題</div>
+                          <div className="ql-detail-question">{q.question}</div>
+                        </div>
+                        {isChoice && (
+                          <div className="ql-detail-section">
+                            <div className="ql-detail-label">選択肢</div>
+                            <div className="ql-detail-choices">
+                              {q.choices.map((choice, idx) => (
+                                <div
+                                  key={idx}
+                                  className={"ql-detail-choice" + (idx === q.correctIndex ? " correct" : "")}
+                                >
+                                  <span className="ql-detail-choice choice-label">{labels[idx]}</span>
+                                  <span>{choice}</span>
+                                  {idx === q.correctIndex && <span style={{marginLeft: "auto", fontWeight:700}}>✓</span>}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        {!isChoice && (
+                          <div className="ql-detail-section">
+                            <div className="ql-detail-label">正解</div>
+                            <div className="ql-detail-answer">{q.correctAnswer}</div>
+                          </div>
+                        )}
+                        <div className="ql-detail-section">
+                          <div className="ql-detail-explanation">
+                            <div className="ql-detail-label">解説</div>
+                            <p>{q.explanation}</p>
+                          </div>
+                        </div>
+                        {answerCounts[q.id] && (
+                          <div className="ql-detail-section">
+                            <div style={{fontSize:12, color:"#6b7280"}}>回答数: {answerCounts[q.id]}</div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          ))}
         </div>
       );
     }
